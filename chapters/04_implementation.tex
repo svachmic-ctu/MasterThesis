@@ -6,7 +6,7 @@ UML diagram a popis komunikace
 \section{Semantic Data Manager}
 The central part of the project should be robust and reliable. For that reason I chose Java as the main technology. For convenience and standardization of the code-base I opted for Spring Boot framework.
 
-The code is packaged by Maven and deployed as WAR to AWS EB auto-scaled m3.medium instance, running Tomcat 8 server. Database runs on managed Amazon RDS (Relational Database Service), which is fast, secure and scalable deployment of database engine. The size of the instance is recommended for any application running JVM. The configuration is Intel Xeon E5-2670 v2 (Ivy Bridge), 4GB SSD storage and 3.75GB RAM. Any additional memory is handled via S3.
+The code is packaged by Maven and deployed as WAR file to AWS EB auto-scaled m3.medium instance, running Tomcat 8 server. Database runs on managed Amazon RDS (Relational Database Service), which is fast, secure and scalable deployment of database engine. The size of the instance is recommended for any application running JVM. The configuration is Intel Xeon E5-2670 v2 (Ivy Bridge), 4GB SSD storage and 3.75GB RAM. Any additional memory is handled via S3.
 
 \section{Tracking Engine}
 
