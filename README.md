@@ -10,6 +10,15 @@ Current status quo in data collection is to collect everything that is available
 
 The focal part of this thesis is the focus on user interactions - collection of data from mobile applications. Before such collection can even happen, interactions must be defined - the "what", "when" and "why". Starting with management, over to architecture and engineering to interpreting results as the destination - uniting all steps to form a bigger picture.
 
+## Building the document
+
+In order to compile all cross-references and bibliography, follow these steps:
+
+1. PdfLaTeX
+2. Bib(la)tex
+3. PdfLaTeX
+4. PdfLaTeX
+
 ## Contact
 
 - [Michal Švácha](http://github.com/svachmic) ([@miguelitinho](https://twitter.com/miguelitinho))
