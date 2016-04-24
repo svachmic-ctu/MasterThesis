@@ -1,0 +1,55 @@
+\chapter{Analysis}
+
+\section{Opportunity Assessment}
+\begin{enumerate}
+	\item \emph{What problem are we trying to solve?}
+	\item[] The problem is that no platform allows by default storage of user data on custom servers. In a regulatory market it is vital to have that option. Also no higher semantic analysis other than defining in code customizations is provided. Enabling alignment of business language and user interaction reporting is a key part of success. Lack of interchangeability tends to end up with a vendor lock-in.
+	
+	\item \emph{For whom do we solve that problem?}
+	\item[] 	For the entire scope of company, top to bottom. Setting a business goal, aligning it with the needs of managers, developers and users.
+	
+	\item \emph{How will we measure success?}
+	\item[] Having gathered data that is securely placed on custom servers and analysed by NLP tools and vizualized by Kibana/D3.js or any other analytics frameworks.
+\end{enumerate}
+
+\section{Existing Tools}
+
+\subsection{Google Analytics}
+
+Google Analytics is the by far most popular and widely used framework for monitoring user interactions in applications. Reports everything the developer wishes to. By default it doesn't report anything - the tool has to be activated on application start and then actions need to be wired to the framework. Action can be either wired up after certain custom occurrence has appeared (pressed button, refreshing data) or simply an identifier can be set to an actionable item (button) - then whatever happens with that item, gets reported.
+
+The dashboard website is very detailed and responsive. All data is nicely visualized in graphs and corresponds well with the whole GA ecosystem. Higher order semantic interpretations are missing, though.
+
+The source code is closed source and all of the statistics run ot Google servers. Data is accessible via REST API, but registration is required. Single user account is free, enterprise account is paid for. Enterprise account does NOT include an opt-out from Google servers.
+
+\subsection{Fabric (formerly Crashlytics)}
+
+Crashlytics was also a star framework. Acquired by Twitter, it is now a vital part all purpose platform - Fabric. Fabric is aside from a reporting tool a full featured developer platform used for variety of tasks and obstacles a developer may face - even beta version distribution that has always been a problem for iOS developers. The Crashlytics reporting has been taken a step further and is not only about reporting crashes. It also reports overall statistics, like Google. One nice feature Fabric has is by acquiring AppSee - a way of visualizing user movement in the app through the usage data. A video of steps users take in their app gives the developer a new perspective on how the app is used.
+
+The source code is closed source and all of the statistics run ot Twitter servers. Data is NOT accessible. The whole platform is free to use. Registration is required along with installation of a custom program to install the framework parts in existing projects.
+
+\subsection{App Pulse (formerly Pronq)}
+
+App Pulse is a "new feature by acquisition" - acquired by HP in 2014, it is now part of the portfolio of the new Hewlett Packard Enterprise. It lets users try out their 30-day trial and then charges for everything (no free version).
+
+App Pulse is very different from GA in a way that it reports everything at all times. The usage is fairly low - tens of kilobytes per week, but it is very thorough. Screen time, actions, movements - it is all there. No setup is required for the start. The SDK they supply simply has to be dragged and dropped in Xcode project and then it starts working out-of-the-box. The only issue is the need to have consistent naming of all views, labels, buttons etc. - as it does everything on its own, without hooking up the actionable items to the framework manually, it can be hard to determine which button was which.
+
+The tools are closed source and all of the statistics run on HP servers. No API is provided.
+
+\subsection{Crittercism}
+
+Crittercism doesn't stand out from previously mentioned tools - has their own servers, SDK and works seemlessly. Has some more benchmarking than others, and seems very enterprise oriented - they enable 3rd party API integration into their system to see performance of other APIs used in the application to really find what can be the bottleneck of the app's performance.
+
+The tools are closed source and all of the statistics run on their servers. API is provided.
+
+\subsection{New Relic}
+
+New Relic somewhat differs in a sense that as the only platform there is a mention on their website about "specific needs" - maybe custom server can be provided. Otherwise it is the same strategy - SDK installed in every app and statistics gets reported periodically. Nice alerting system is optionally provided - when crash occurs, web hook to ticketing system can be defined to streamline bug reports.
+
+The SDKs are open source, the analytics runs on their servers (~ possibly 'not only'). No API is provided.
+
+\subsection{Apple}
+
+The last isn't considered framework, but it should be noticed. As companies fight for data from mobile applications - such as Twitter, who gives out their platform free for everybody, naturally the platform owners strive for keeping all that precious data for themselves. Apple announced at WWDC 2015 new iTunes Connect portal redesign and along with it also a new feature - App Analytics. It is fairly thorough in means of usage, downloads, screen time etc, but overall reporting is still very high level and really far from the code. It seems like it is not meant to be a developer tool at all, because there is no in depth code reporting. There are crashes reported, but not very detailed compared to Fabric.
+
+These statistics are provided to every single developer of iOS apps for free on the iTunes Connect website. There is no framework and naturally Apple keeps all of the data for themselves.

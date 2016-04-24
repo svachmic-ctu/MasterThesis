@@ -1,0 +1,30 @@
+\chapter{Design}
+
+\section{System Architecture}
+
+PICTURE
+
+\subsection*{Description}
+TBD depending on the picture
+
+\subsection*{Components}
+\subsection{Semantic Data Manager}
+
+This is the most crucial component of the whole solution - connecting JIRA and tracking capabilities. The main task is to obtain actionable items from JIRA, create configurations for mobile applications engineers to include in the source code and then also obtain the data collected in this fashion and make sense out of it. 
+
+\subsection{Statistical Front-end}
+
+This component is the most visible one - it connects to the API of the Semantic Data Manager and visualizes what has been collected.
+
+\subsection{Tracking Engine}
+
+As a tracking engine, anything that provides API for data retrieval is good. Google Analytics is a good option, but for reasons listed in previous chapter (privacy), it is more convenient to use own tracking solution.
+
+\subsection{Tracked Device}
+
+This can be any kind of iOS mobile device - iPhone, iPad, Apple Watch or Apple TV. The key part is, that the data that is being sent to the tracking engine is in sync with the data that the semantic data server collected from JIRA.
+
+
+
+
+Analýza a návrh implementace (včetně diskuse různých alternativ a volby implementačního prostředí).
