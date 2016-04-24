@@ -70,8 +70,6 @@ unicode=true,
 {hyperref}
 
 
-
-
 \begin{document}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -119,25 +117,6 @@ unicode=true,
 	 \newcommand\labelStudBranch{Field of Study}
 }
 
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%    Poznamky ke kompletaci prace
-% Nasledujici pasaz uzavrenou v {} ve sve praci samozrejme 
-% zakomentujte nebo odstrante. 
-% Ve vysledne svazane praci bude nahrazena skutecnym 
-% oficialnim zadanim vasi prace.
-{
-\pagenumbering{roman} \cleardoublepage \thispagestyle{empty}
-\chapter*{Na tomto místě bude oficiální zadání vaší práce}
-\begin{itemize}
-\item Toto zadání je podepsané děkanem a vedoucím katedry,
-\item musíte si ho vyzvednout na studiijním oddělení Katedry počítačů na Karlově náměstí,
-\item v jedné odevzdané práci bude originál tohoto zadání (originál zůstává po obhajobě na katedře),
-\item ve druhé bude na stejném místě neověřená kopie tohoto dokumentu (tato se vám vrátí po obhajobě).
-\end{itemize}
-\newpage
-}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%    Titulni stranka / Title page 
 
@@ -195,7 +174,6 @@ Těžištěm práce je zaměření se na uživatelské interakce - sběr dat z m
 \mainbodystarts
 % horizontalní mezera mezi dvema odstavci
 %\parskip=5pt
-%11.12.2008 parskip + tolerance
 \normalfont
 \parskip=0.2\baselineskip plus 0.2\baselineskip minus 0.1\baselineskip
 
@@ -203,16 +181,6 @@ Těžištěm práce je zaměření se na uživatelské interakce - sběr dat z m
 % odstavce kapitol, sekci, podsekci atd.) Viz usepackage{indentfirst}.
 % Chcete-li selektivne zamezit odsazeni 1. radku nektereho odstavce,
 % pouzijte prikaz \noindent.
-
-%**************************************************************
-
-% Pro snadnejsi praci s vetsimi texty je rozumne tyto rozdelit
-% do samostatnych souboru nejlepe dle kapitol a tyto potom vkladat
-% pomoci prikazu \include{jmeno_souboru.tex} nebo \include{jmeno_souboru}.
-% Napr.:
-% \include{1_uvod}
-% \include{2_teorie}
-% atd...
 
 %*****************************************************************************
 
@@ -229,11 +197,6 @@ Těžištěm práce je zaměření se na uživatelské interakce - sběr dat z m
 \include{chapters/06_conclusion}
 
 %*****************************************************************************
-
-% Seznam literatury je v samostatnem souboru reference.bib. Ten
-% upravte dle vlastnich potreb, potom zpracujte (a do textu
-% zapracujte) pomoci prikazu bibtex a nasledne pdflatex (nebo
-% latex). Druhy z nich alespon 2x, aby se poresily odkazy.
 
 \bibliographystyle{abbrv}
 %bibliographystyle{plain}
