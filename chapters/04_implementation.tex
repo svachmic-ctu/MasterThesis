@@ -8,11 +8,14 @@ The central part of the project should be robust and reliable. For that reason I
 
 The code is packaged by Maven and deployed as WAR file to AWS EB auto-scaled m3.medium instance, running Tomcat 8 server. Database runs on managed Amazon RDS (Relational Database Service), which is fast, secure and scalable deployment of database engine. The size of the instance is recommended for any application running JVM. The configuration is Intel Xeon E5-2670 v2 (Ivy Bridge), 4GB SSD storage and 3.75GB RAM. Any additional memory is handled via S3.
 
+// JIRA - pagination problems, service account
+
 \section{Tracking Engine}
 
 Because the tracking engine was developed after the Semantic Data Manager, I opted to use Java again. I first tried to use play2 framework for educational purposes, but I encountered too many obstacles deploying play2 application so I had to drop it. Main reason was that play2 uses its own application server - Netty Server, which always runs on port 9000. When deploying to AWS EB (via tool Activator that prepares a package similar to WAR file - WAR files are not supported by play2), NGINX that handles HTTP requests searched for application deployed on port 5000. Because Netty does not support compile-time port configuration and NGINX does not support running Activator to set up the port during run-time I had to drop the idea of using play2. I tried to configure NGINX to not look for the application on port 5000, but AWS EB has a very limited configurability in this area. That was the end for play2 and so I used Spring Boot again.
 
-// JSON
+// H2 DB, Flyweight + DB schema
+// REST API + JSON
 
 The code is deployed in the same fashion as the Semantic Data Manager.
 
@@ -29,22 +32,22 @@ The code is packaged in Docker image and is deployed in two EC2 t2.medium instan
 \subsubsection{Front-end}
 Requirements for mobile client were only for iOS devices. Therefore, as no code portability was required, I opted to go native. For native development, Apple's language Swift is used (as of March 2016, in version 2.2). Swift is a general-purpose, multi-paradigm (both object oriented and functional), compiled programming language. It was first released to support iOS and Mac OS X, now supporting also tvOS (Apple TV 4th generation and newer) and watchOS (Apple Watch). Many more cases of use are coming, because Swift compiler has been open-sourced. It is gaining popularity among non-Apple developers mainly due to its safety, robustness and ease of use.
 
+\subsubsection*{Dependencies}
+
+// CocoaPods
+
 \subsubsection*{User Interface}
 
 DASHBOARD screenshot + DETAIL screenshot
 
 Color scheme of the application was provided by a graphical designer. Most of the graphics is set on code level. I am not in favor of bloated projects because of multitude of png files for every possible device. Code generated graphics may introduce some level of complexity, but the space saved on user's device is more important. Even with app-slicing (method of distribution provided by Apple - only the resources needed for your device are downloaded), the amount of space saved is at least 3MB.
 
-ios-charts
+// ios-charts
 
 \subsubsection*{Networking}
 
-Alamofire + VPN
+// Alamofire + VPN
 
 \subsubsection*{Data Model}
 
-Realm.IO
-
-\subsubsection*{In-app Analytics}
-
-Google Tag Manager
+// Realm.IO
