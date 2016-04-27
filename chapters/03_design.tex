@@ -1,30 +1,45 @@
 \chapter{Design}
 
+\section{JIRA}
+
+JIRA is ...
+
+\subsection{Domain Specific Language}
+
+Domain Specific Language (in short DSL) is ...
+
 \section{System Architecture}
 
 PICTURE
 
-\subsection*{Description}
+\subsubsection*{Description}
 TBD depending on the picture
 
+
 \subsection*{Components}
+
 \subsection{Semantic Data Manager}
 
-This is the most crucial component of the whole solution - connecting JIRA and tracking capabilities. The main task is to obtain actionable items from JIRA, create configurations for mobile applications engineers to include in the source code and then also obtain the data collected in this fashion and make sense out of it. 
+This is the most crucial component of the whole solution - connecting JIRA and tracking capabilities. The main task is to obtain actionable items from JIRA and create configurations for application engineers to include in the source code. These configurations should be persisted for the sake of reproducibility. Persistence shouldn't be applied to any metadata (detailed measurement description) as it is subject to change in JIRA. Every issue/ticket has a finite unique ID and that should be the only persisted piece of data.
 
-\subsection{Statistical Front-end}
+Connecting to JIRA will be handled via its JIRA Agile REST API. It should automatically retrieve a list of all projects and their subsequent issues/tickets that may or may not contain specific metadata regarding fine-grained measurement demands.
 
-This component is the most visible one - it connects to the API of the Semantic Data Manager and visualizes what has been collected.
+SDM will run as a stand-alone microservice and provide UI for easy measurement configuration, but also REST API, should the UI ever be replaced.
+
 
 \subsection{Tracking Engine}
 
-As a tracking engine, anything that provides API for data retrieval is good. Google Analytics is a good option, but for reasons listed in previous chapter (privacy), it is more convenient to use own tracking solution.
+As a tracking engine, anything that provides API for data storage/retrieval is good enough. Google Analytics is a good feasible option, but for reasons listed in previous chapter (especially privacy), it is more convenient to use own tracking solution.
+
 
 \subsection{Tracked Device}
 
 This can be any kind of iOS mobile device - iPhone, iPad, Apple Watch or Apple TV. The key part is, that the data that is being sent to the tracking engine is in sync with the data that the semantic data server collected from JIRA.
 
 
+\subsection{Statistical Front-end}
+
+This component is the most visible one, because it interprets the collected data.
 
 
 Analýza a návrh implementace (včetně diskuse různých alternativ a volby implementačního prostředí).
