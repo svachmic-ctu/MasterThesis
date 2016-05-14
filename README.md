@@ -1,14 +1,14 @@
 # Semantic Data Analysis and Visualization of User Interactions
 
-Master Thesis at Czech Technical University in Prague (Summer 2016)
+Master's Thesis at Czech Technical University in Prague (Summer 2016)
 
 [![Twitter](https://img.shields.io/badge/twitter-@miguelitinho-blue.svg?style=flat)](http://twitter.com/miguelitinho)
 
 ## Abstract
 
-Current status quo in data collection is to collect everything that is available. This approach has given birth to a trend of the last couple years - "Big Data". Data that is inconveniently large for processing, interpretation and inference. When a company decides to leverage big data, it usually ends up with having too much information and no real business value. Each department uses different domain vocabularies and therefore there is no synchronization and understanding. This master thesis is trying to take the opportunity of this disorder and connect the endpoints together while leveraging big data to provide an end-to-end solution.
+The current status quo in data collection is to collect everything that is available. This approach has given rise to a trend in the last couple years - "Big Data". Data that is inconveniently large for processing, interpretation and inference. When a company decides to leverage big data, it usually ends up having too much information and no real business value. Each department uses different domain vocabularies and there is therefore no synchronization or understanding. This master's thesis is trying to take the opportunity of this disorder and connect the endpoints together while leveraging big data to provide an end-to-end solution.
 
-The focal part of this thesis is the focus on user interactions - collection of data from mobile applications. Before such collection can even happen, interactions must be defined - the "what", "when" and "why". Starting with management, over to architecture and engineering to interpreting results as the destination - uniting all steps to form a bigger picture.
+The focal part of this thesis is the focus on user interactions - the collection of data from mobile applications. Before such collection can even happen, the interactions must be defined - the "what", "when" and "why". Starting with management, over to architecture and engineering to interpreting results as the destination - uniting all steps to form a bigger picture.
 
 ## Building the document
 
