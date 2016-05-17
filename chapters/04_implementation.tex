@@ -58,7 +58,11 @@ What struck me most though, is the absence of OAuth or Token-based communication
 
 JQL stands for JIRA Query Language\cite{jql}. It enables the API user to query the JIRA knowledge graph and extract information.
 
-// PICTURE
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.5\textwidth]{figures/jql}
+    \caption{JQL syntax}
+\end{figure}
 
 \begin{enumerate}
 	\item {\bf Field} - Fields are different types of information in the system. JIRA fields include priority, fixVersion, issue type, etc.
@@ -152,6 +156,12 @@ I first tried to use play2 framework for educational purposes, but I encountered
 \end{itemize}
 
 All three combined resulted in inability to synchronize the play2 application on port 9000 and NGINX running on port 5000. Unfortunately Netty Server does not support compile-time port configuration and NGINX does not support running Activator to set up the port during run-time, so I had to drop the idea of using play2 as I was simply unable to deploy the application. After researching and discussing with my peers and coworkers I looked up Spring MVC and stumbled upon Spring Boot, also recommended by my classmate. I tried few sample apps and found out it supports WAR packaging, runs natively on Tomcat and comes with almost the same perks like play2. I was ready to give it a try.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.5\textwidth]{figures/spring}
+    \caption{Spring Boot architecture}
+\end{figure}
 
 "Spring Boot aims to make it easy to create Spring-powered, production-grade applications and services with minimum fuss. It takes an opinionated view of the Spring platform so that new and existing users can quickly get to the bits they need."\cite{spring-boot-blog}
 
