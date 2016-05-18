@@ -1,17 +1,60 @@
 \chapter{Introduction}
 
-In the lean/agile product development, it is necessary to have a formalized user feedback loops in place, to measure the product performance against various (quantitative) metrics. Such feedback loops are getting information and statistics regarding user engagement and interaction with the product. Are the users using it the way the creator imagined it or did they find any other means of utilizing it? What stops the users from doing the task they intended? Do they get everything they need and at the same time does the creator get what was expected? In other words - are the dominant means of usage incentive compatible for the users? 
+In the lean/agile product development, it is necessary to have a formalized user feedback loops in place, to measure the product performance against various (quantitative) metrics. Such feedback loops are obtaining the information and statistics regarding user engagement and interaction with the developed product. Are the users using it the way the creator imagined it or did they find any other means of utilizing it? What stops the users from doing the task they intended? Do they get everything they need and at the same time does the creator get what was expected? In other words - are the dominant means of usage incentive compatible for the users? 
 
-Not only that the current solutions for gathering such user data for both quantitative and qualitative metrics work out-of-the-box with low-level semantics only (everything is a general activity on a general resource), but also tend to run on somebody else's servers. What if the product developer is in a highly regulated market, such as pharmaceuticals, and has to own all their users' data? How can the current solutions' space be utilized and tweaked in order to fit in such schema?
+Not only that the current solutions for gathering such user data for both quantitative and qualitative metrics work out-of-the-box with low-level semantics only (everything is a general activity on a general resource), but also tend to run on somebody else's servers. What if the product developer is in a highly regulated market, such as the pharmaceuticals, and has to own all their users' data? How can the current solutions' space be utilized and tweaked in order to fit in such schema?
 
-The most problematic issue in large corporations is the disconnectivity of the data. It may physically be all there, however, nobody knows what and how should it be connected in order for it to make sense and drive value. Do I have good data or do I just have petabytes of useless log trace? Am I gathering what the application was inteded to do or am I only filling the database of irrelevant information. Most importantly, though - Am I gathering the information I need in a consistent fashion that coresponds to the domain of the shareholders?
+The most problematic issue in large corporations is the disconnectivity of the data. It may physically be all there, however, nobody knows what and how should it be connected in order for it to make sense and drive value. Do I have good data or do I just have petabytes of useless log trace? Am I gathering what the application was intended to do or am I only filling the database with irrelevant garbage information. Most importantly, though - Am I gathering the information I need in a consistent fashion that corresponds to the domain of the shareholders?
 
 Let's draw an analogy here.
 
 \subsection*{Example}
 
-The management comes with a need to create an e-commerce mobile application to drive sales of their products. The main KPI (= Key Performance Indicator) is the customer turnover (= how many incoming customers buy a product) and retention (= how many customers that previously bought a product come back). This idea is passed/assigned to middle management for processing. At this point one can assume that the domain vocabulary for the project is almost the same, as the direct source (management) was the one to mediate the idea. From then on, project is passed on to various people in various departments (design, back-end, front-end). Every department has a different technique of work and may also have different jargon. That has the effect that the first idea may be fulfilled but not properly measured. The management was clearly interested in \emph{customer turnover} and \emph{customer retention}. Those two activities were translated into "buying customer" and "repeated shopping" or any other equivalents. While it does bring the message in the end, it does slow down the whole process that can be automated. Starting from the development and ending with the interpretation for the management.
+\begin{enumerate}
+	\item Top management comes with a need to sell more products on mobile devices.
+	\item Project management team takes over and breaks it down to user-stories, tasks etc.
+	\item Project management team asks the UX team, the mobile applications team and the backend team to perform their tasks in order to bring the product to life.
+	\item By the time the product development is spread in three different teams, it is very much likely, that each team creates their own jargon for every activity performed in the product.
+		\begin{itemize}
+			\item The UX team is driven by the larger picture so they tend to refer to objects in a highly abstract way.
+			\item The backend team is driven by the inner processes happening between the database and the REST API, so they speak their precise technical language.
+			\item The mobile applications team is somewhere between, but never really aligned with either of the other teams.
+		\end{itemize}
+	\item When the product is delivered, the project management team has a really hard time translating reported results into the top management's primary goals. Plus - the larger the teams are, the worse the situation actually gets.
+\end{enumerate}
+
+This example isn't a problem in project management itself. The company can use the best project management tools on the market and have the smartest people working on their teams and still encounter this problem on a daily basis. This is a larger problem of domain disconnectivity.
+
+\subsection{Personal interviews}
+
+In order to verify the needs I have conducted several interviews with leaders of various departments. These are their reactions to what bothers them about product monitoring during development phase:
+
+\begin{enumerate}
+		\item Associate Director, Applied Technology
+		\begin{itemize}
+				\item[] "The real problem I see is the fact, that all the information I need is on somebody else's server. We can't store any sensitive, let alone confidential information \emph{somewhere} with some random vendor. It's actually illegal in some countries. Unfortunately, sometimes sensitive data is exactly what we need to obtain from the applications to make an informed decision."
+		\end{itemize}	
+
+		\item Associate Director, Mobile and Web
+		\begin{itemize}
+				\item[] "Our needs for tracking KPIs are variable throughout the time and unfortunately the current tools we use are quite inflexible. Because we are in a regulated market, each change that requires new build of an application takes a longer period of time. And time \emph{is} money."
+		\end{itemize}				
+		
+		\item Mobile Application Development Lead
+		\begin{itemize}
+				\item[] "I have noticed that the one of the biggest obstacles is how should we name what we measure. I have no vocabulary to help me during the development. The only thing we have is a robust Google Analytics toolkit that only allows us to gather low-level actions. We can log that a button was pressed, but what do we name such action? "Button pressed"?"
+		\end{itemize}
+		
+		\item UX Lead
+		\begin{itemize}
+				\item[] "Our team looks at the high level needs. We are trying to make the user activities in an application as smooth as possible. When we design a low-fidelity prototype, we know what we want to measure. Having the opportunity to add a high-level KPI would help us a lot in order to gather feedback for our prototypes. We are not programmers, we don't know how to add it to the code, but I would love the idea of including what to measure along with the prototype."
+		\end{itemize}
+\end{enumerate}
 
 \subsection*{Scope of work}
 
-First, I will present the context of software development in a regulated market. Then I will take a look at the current tracking solutions being used in mobile development (focus is on iOS development, but most of the tools are multiplatform). I will examine and analyze their strengths and weaknesses and further propose an architecture to fit the needs of a company operating in a regulated market. And last I will propose a working PoC (Proof of Concept) tested in a real environment.
+First, I will present the context of agile software development in a regulated market. Then I will take a look at the current tracking solutions being used in mobile development (focus is on iOS development, but most of the tools are multiplatform solutions) - I will examine and analyze their strengths and weaknesses. 
+
+I will further propose a workflow to fit the needs of a larger company with multiple departments, operating in a regulated market. I will utilize existing tools and build on top of them in order to drive value without reinventing the wheel couple times.
+
+Last I will develop a working PoC (Proof of Concept), verify its functions by user testing and further discuss with the stakeholders again whether or not it is the correct path to uniting all departments and connecting the dots in the data.
