@@ -1,17 +1,16 @@
 \chapter{Analysis}
 
-
 \section{Opportunity Assessment}
 
 \begin{enumerate}
 	\item \emph{What problem are we trying to solve?}
-	\item[] The problem is that no platform allows by default storage of user data on custom servers. In a regulatory market it is vital to have that option. Also no higher semantic analysis other than defining in code customizations is provided. Enabling alignment of business language and user interaction reporting is a key part of success. Lack of interchangeability tends to end up with a vendor lock-in.
+	\item[] The problem is that no commercially successful platform allows storage of user data on custom servers. In a regulatory market it is vital to have such option. Also no higher semantic analysis other than defining in-code customizations is provided. Enabling alignment of business language and user interaction reporting is a key part to success. The lack of interchangeability tends to end up with a vendor lock-in.
 	
 	\item \emph{For whom do we solve that problem?}
-	\item[] 	For the entire scope of company, top to bottom. Setting a business goal, aligning it with the needs of managers, developers and users.
+	\item[] 	For all departments in the company that are participating in product development, top to bottom. From setting a business goal to defining the needs, while also helping the developers and the designers.
 	
 	\item \emph{How will we measure success?}
-	\item[] Having gathered data that is securely placed on custom servers and analysed by NLP tools and vizualized by Kibana/D3.js or any other analytics frameworks.
+	\item[] Having gathered data that is securely placed on custom servers. Data that is united and connected by shared domain vocabulary, ready to be analyzed and visualized in order to draw conclusions.
 \end{enumerate}
 
 
@@ -20,32 +19,6 @@
 Regulated markets, especially pharmaceuticals have multiple rules that need to be carefully followed in order to be allowed to use new IT products. Not only is important how much value does the final product bring to the end user, but also how data storage is handled and how prone it is to exploitations and attacks. 
 
 From development process point of view it is equally important to follow specific guidelines and processes during the development phase. Each step has to be carefully documented and approved by specific audit department. For that reason, most of the big pharmaceutical companies use the waterfall model - SDLC (= Software Development Life Cycle), which enables companies to follow specific steps in order to get their software product certified. This all hassle is not for the sake of bureaucracy, it is to protect the customers and increases the level of tracability of a problem, should one ever occur. After all, it is their private data that goes on the server, so it is imperative that it is safe.
-
-\subsection{Personal interviews}
-
-To be able to draw any conclusions, I had to conduct interviews with stakeholders from various departments.
-
-\begin{enumerate}
-		\item Associate Director, Applied Technology
-		\begin{itemize}
-				\item[] "The real problem I see is the fact, that all the information I need is on somebody else's server. We can't store any sensitive, let alone confidential information \emph{somewhere} with some random vendor. Unfortunately, sometimes sensitive data is exactly what we need to obtain from the applications to make an informed decision."
-		\end{itemize}	
-
-		\item Associate Director, Mobile and Web
-		\begin{itemize}
-				\item[] "Our needs for tracking KPIs are variable throughout the time and unfortunately the current tools we use are quite inflexible. Because we are in a regulated market, each change that requires new build of an application takes a longer period of time. And time \emph{is} money."
-		\end{itemize}				
-		
-		\item Mobile Application Development Lead
-		\begin{itemize}
-				\item[] "I have noticed that the one of the biggest obstacles is how should we name what we measure. I have no vocabulary to help me during development. The only thing we have is a robust Google Analytics toolkit that only allows us to gather low-level actions."
-		\end{itemize}
-		
-		\item UX Lead
-		\begin{itemize}
-				\item[] "Our team looks at the high level needs. We are trying to make activities in an application as smooth as possible for the user. When we design a low-fidelity prototype, we know what we want to measure. Having the opportunity to add a high-level KPI would help us a lot to gather feedback for our prototypes. We are not programmers, we don't know how to add it to the code, but I would love the idea of including the KPIs along with the prototype."
-		\end{itemize}
-\end{enumerate}
 
 
 \section{Existing Tools}
