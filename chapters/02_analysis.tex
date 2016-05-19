@@ -1,16 +1,31 @@
 \chapter{Analysis}
 
-\section{Opportunity Assessment}
+\section{Product Opportunity Assessment}
+
+Product opportunity assessment is a helpful procedure to separate the wheat from the chaff. It points out the real pressing issues that are mission critical for the company.
 
 \begin{enumerate}
 	\item \emph{What problem are we trying to solve?}
-	\item[] The problem is that no commercially successful platform allows storage of user data on custom servers. In a regulatory market it is vital to have such option. Also no higher semantic analysis other than defining in-code customizations is provided. Enabling alignment of business language and user interaction reporting is a key part to success. The lack of interchangeability tends to end up with a vendor lock-in.
+	\item[] Enabling alignment of business language and user interaction reporting is a key part to a success of a new product. No commercially successful platforms allow such alignment, not even any higher semantic analysis. 
+	\item[] In a regulatory market it is vital to have an option of storing the user data on custom servers. No such option along with the higher-level analysis is currently available at the market.
+	\item[] There is no standardized toolkit and thus the lack of interchangeability between tools tends to end up with a vendor lock-in.
 	
 	\item \emph{For whom do we solve that problem?}
 	\item[] 	For all departments in the company that are participating in product development, top to bottom. From setting a business goal to defining the needs, while also helping the developers and the designers.
 	
 	\item \emph{How will we measure success?}
 	\item[] Having gathered data that is securely placed on custom servers. Data that is united and connected by shared domain vocabulary, ready to be analyzed and visualized in order to draw conclusions.
+
+	\item \emph{What alternatives are out there?}
+	\item[] There is some proprietary software on the market, but none is flexible enough for the defined needs.
+
+	\item \emph{Why now?}
+	\item[] The competitors \cite{data-driven-pharma} are really getting into the data-driven decisions. The intention is not to gather as much data as possible, but to generate valuable insights as soon as possible in order not to fall behind the competition.
+
+	\item \emph{What factors are critical to success?	}
+	\item[] Alignment of all departments participating in software development in a non-invasive fashion. It is critical to primarily focus on helping the departments to connect with each other.
+	\item[] The ability to run the whole solution on custom servers and have total control over all gathered data.
+	
 \end{enumerate}
 
 
@@ -23,14 +38,43 @@ From development process point of view it is equally important to follow specifi
 
 \section{Existing Tools}
 
+I will now analyze and assess the tools available on the market. I'll focus primarily on the flexibility of the deployment and their analysis features. Anything else has a minor priority.
+
 \subsection{Google Analytics}
 
-Google Analytics is the by far most popular and widely used framework for monitoring user interactions in applications. Reports everything the developer wishes to. By default it doesn't report anything - the tool has to be activated on application start and then actions need to be wired to the framework. Action can be either wired up after certain custom occurrence has appeared (pressed button, refreshing data) or simply an identifier can be set to an actionable item (button) - then whatever happens with that item, gets reported.
+Google Analytics is by far the most popular and widely used framework for monitoring user interactions in applications. It reports everything the developer wishes to. By default it does not report anything - the tool has to be activated during application start. Then each action needs to be hard-coded in the code. An action can be two things - the first one is after a certain user activity has happened - a press of a button, pulling down a list to refresh the data etc. One thing gets reported - "this event has happened". The second one is more open - an identifier is set to an item, let's say, a button. Whatever happens with that button gets reported, be it touch, swipe or anything else.
 
-The dashboard website is very detailed and responsive. All data is nicely visualized in graphs and corresponds well with the whole GA ecosystem. Higher order semantic interpretations are missing, though.
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.65\textwidth]{figures/analytics}
+    \caption{Google Analytics Dashboard}
+\end{figure}
 
-The source code is closed source and all of the statistics run ot Google servers. Data is accessible via REST API, but registration is required. Single user account is free, enterprise account is paid for. Enterprise account does NOT include an opt-out from Google servers.
+The dashboard website is very detailed and responsive. All data is nicely visualized in graphs and corresponds well with the whole GA ecosystem. Higher order semantics is remotely possible via definition of complex queries and dashboard setups. User management is very rich and enables forming multiple roles for different users. The main problem is, unfortunately, that all data goes to Google. There is no option of having the engine run on custom servers. All code is closed source and that simply wouldn't go through any risk assessments because Google might be sending the data to anywhere in the world.
 
+Data is accessible via REST API, but registration for it is required (it is not possible for a "normal" user to start using the REST API). Single user account is free, enterprise account is paid.
+
+\subsection{Google Tag Manager}
+
+Google Tag Manager is a tag management system that allows quick and easy update of tags and code snippets in a mobile application. It allows adding and updating AdWords, Google Analytics, etc. from the Tag Manager user interface instead of editing the code.
+
+A tag is a snippet of code that sends information to Google. It is not necessary to wire it up in code - it works through configuration files from the admin user interface.
+
+Tag Manager is deployed in conjunction with the Firebase SDK, with support for both Android and iOS. The container replaces all other manually-coded tags in the mobile application, including tags from AdWords, Google Analytics etc. It basically builds on top of Google Analytics to make the integration a little easier. It is aimed to be used by people focused mainly on marketing, thus the tool itself serves as an overall performance dashboard. It allows them to create complex tags in a short period of time. Unfortunately it works well only on the web - the tags have to be hard-coded in mobile applications.
+
+\newpage
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.65\textwidth]{figures/tagmanager}
+    \caption{Google Tag Manager Dashboard}
+\end{figure}
+
+The dashboard is similar in style to the Google Analytics one. Tags can be created, modified and linked with a specific Google Analytics query. The same as for Google Analytics holds for Google Tag Manager - everything is closed source and runs exclusively on Google's servers.
+
+\subsection{Teallium}
+
+TBD
 
 \subsection{Fabric (formerly Crashlytics)}
 
