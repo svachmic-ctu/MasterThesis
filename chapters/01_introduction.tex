@@ -4,14 +4,26 @@ In the lean/agile product development, it is necessary to have a formalized user
 
 Not only that the current solutions for gathering such user data for both quantitative and qualitative metrics work out-of-the-box with low-level semantics only (everything is a general activity on a general resource), but also tend to run on somebody else's servers. What if the product developer is in a highly regulated market, such as the pharmaceuticals, and has to own all their users' data? How can the current solutions' space be utilized and tweaked in order to fit in such schema?
 
-The most problematic issue in large corporations is the disconnectivity of the data. It may physically be all there, however, nobody knows what and how should it be connected in order for it to make sense and drive value. Do I have good data or do I just have petabytes of useless log trace? Am I gathering what the application was intended to do or am I only filling the database with irrelevant garbage information. Most importantly, though - Am I gathering the information I need in a consistent fashion that corresponds to the domain of the shareholders?
+\subsection*{Data disconnectivity}
 
-Let's draw an analogy here.
+The most problematic issue in large corporations is the semantic disconnectivity of the data. It occurs when data is collected ad-hoc without any set direction or goal to be achieved. It may physically be all there, however, nobody knows what and how should it be connected in order for it to make sense and drive value. Do I have good data or do I just have petabytes of useless log trace? Am I gathering what the application was intended to do or am I only filling the database with irrelevant garbage information. Most importantly, though - Am I gathering the information I need in a consistent fashion that corresponds to the domain of the shareholders?
 
-\subsection*{Example}
+Let's draw an analogy here and let me illustrate the problem with a real-world example.
+
+\newpage
+
+\subsection{Example}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.9\textwidth]{figures/storyboard}
+    \caption{Real-world example}
+\end{figure}
+
+This situation is mainly caused by:
 
 \begin{enumerate}
-	\item Top management comes with a need to sell more products on mobile devices.
+	\item Top management comes with a need to increase revenue via mobile devices.
 	\item Project management team takes over and breaks it down to user-stories, tasks etc.
 	\item Project management team asks the UX team, the mobile applications team and the backend team to perform their tasks in order to bring the product to life.
 	\item By the time the product development is spread in three different teams, it is very much likely, that each team creates their own jargon for every activity performed in the product.
@@ -23,23 +35,25 @@ Let's draw an analogy here.
 	\item When the product is delivered, the project management team has a really hard time translating reported results into the top management's primary goals. Plus - the larger the teams are, the worse the situation actually gets.
 \end{enumerate}
 
-This example isn't a problem in project management itself. The company can use the best project management tools on the market and have the smartest people working on their teams and still encounter this problem on a daily basis. This is a larger problem of domain disconnectivity.
+This isn't a problem in project management itself. The company can use the best project management tools on the market and have the smartest people working on their teams and still encounter this problem on a daily basis. This is a larger problem of the lack of intersection between different domains (Management, UX, Development, DevOps).
+
+\newpage
 
 \section{Work environment}
 
 The context of this work is in a large company, operating in a regulated market. Where products are developed across multiple departments varying in size, experience, but also in project management approach - traditional and agile methods. Both methods implemented in the organization have their common denominator - measured KPIs to report the status of the work.
 
-\subsection{KPI}
+\subsection{Key Performance Indicators}
 
-Each department/team/person has very specific KPIs (= Key Performance Indicators) that represent the value of their work. Even products have their KPIs - "How much value has this product brought?", "How much time is this product saving us?", etc.
+Each department/team/person has very specific Key Performance Indicators (= KPIs) that represent the value of their work. Even products have their KPIs - "How much value has this product brought?", "How much time is this product saving us?", etc.
 
-\subsection{SDLC}
+\subsection{Software Development Life Cycle}
 
-SDLC (= Software Development Life Cycle) is a standardized traditional and formalized approach to developing a software product for regulated markets. It enables companies to follow specific steps in order to get their software product certified for use in constrained environments. It is not for the sake of bureaucracy, it is to protect the customers and to increase the level of traceability of a problem, should one ever occur.
+Software Development Life Cycle (= SDLC) is a standardized traditional and formalized approach to developing a software product for regulated markets. It enables companies to follow specific steps in order to get their software product certified for use in constrained environments. It is not for the sake of bureaucracy, it is to protect the customers and to increase the level of traceability of a problem, should one ever occur.
 
-\subsection{Agile}
+\subsection{Agile Development Methodologies}
 
-In the modern era of software development, it has become "cool" to not follow traditional waterfall models and adopt agile methodologies, such as scrum or kanban. For many years it was something to be found in start-ups exclusively. But because, time and time again, research showed\cite{947100}, that agile methodologies do impact the level of productivity and innovation. Thus, larger companies are working on adopting them in their constrained context as well. This thesis operates in such place, where agile is being deployed across the whole innovation department.
+In the modern era of software development, it has become "cool" to not follow traditional waterfall models and adopt agile methodologies, such as scrum or kanban. For many years it was something to be found in start-ups exclusively. But because, time and time again, research \cite{947100} showed, that agile methodologies do impact the level of productivity and innovation. Thus, larger companies are working on adopting them in their constrained context as well. This thesis operates in such place, where agile is being deployed across the whole innovation department.
 
 \section{Personal interviews}
 
