@@ -15,22 +15,6 @@ Statistical app ...
 
 The issue tracker used in my work environment is JIRA\footnote{No abbreviation here. It is short for GOJIRA, which is Godzilla in Japanese. Rumor has it that it is because the main competing product is Bugzilla.} by Atlassian. It is a standard project management tool providing bug tracking, issue tracking and many other functions. It is conveniently synergistic with other Atlassian tools such as Confluence (for documentation and wiki) and Bitbucket (formerly Stash), which is a server for version control (Mercurial and Git). The advantage is that all these three components are deployed in a Virtual Private Cloud (= VPC) environment - Amazon Web Services. Thus, as a programmer I have fairly easy access to its internal API without being afraid to leak data where it shouldn't.
 
-\subsection{Knowledge structure}
-
-Every company uses a little different way of structuring their knowledge in their project management tools. In my situation, the structure was as follows:
-
-\subsubsection{Teams}
-
-Everybody is distributed into teams in various departments. While departments are important in the company structure, in the project management, teams are more relevant. Every team has its own Project Board (either Scrum or Kanban) that reflects the state of the team in time - how much work has been done, what will be done and what's currently being done.
-
-\subsubsection{Projects}
-
-Each team works on their own projects. Often times, collaboration does occur, but the owner of the project is still the team. If other person collaborates with other team, it is reflected in his/her work statistics  (storypoints, hours spent), but the ownership stays within the scope of the project and thus the team as well.
-
-\subsubsection{Issues}
-
-Issue is the most granular entity in the system. It defines a step or set of steps to be performed and is usually assigned to one person. Workflows for reviewing etc. vary from team to team. There is a possibility to break down the work on single issue (if it's especially large one) to sub-tasks, but those are not given IDs, so they are not unique per se. They only serve for clarity and visibility of work being done during the day. When all sub-tasks are finished, the whole issue is finished. That is the state reflected by the API.
-
 \subsection{API}
 
 JIRA REST API is quite a mess, which is because Atlassian didn't develop all their products from scratch (Bitbucket was acquired) and it is still visible that the usage isn't seamless. In order to access Teams, Projects and Issues, two API endpoints have to be used:

@@ -8,11 +8,26 @@ PICTURE
 TBD depending on the picture
 
 
-\subsection*{Components}
 
-\subsection{Issue Tracker}
+\section{Issue Tracker}
 
-JIRA is ...
+...
+
+\subsection{Knowledge structure}
+
+Every company uses a little different way of structuring their knowledge in their project management tools. In my situation, the structure was as follows:
+
+\subsubsection{Teams}
+
+Everybody is distributed into teams in various departments. While departments are important in the company structure, in the project management, teams are more relevant. Every team has its own Project Board (either Scrum or Kanban) that reflects the state of the team in time - how much work has been done, what will be done and what's currently being done.
+
+\subsubsection{Projects}
+
+Each team works on their own projects. Often times, collaboration does occur, but the owner of the project is still the team. If other person collaborates with other team, it is reflected in his/her work statistics  (storypoints, hours spent), but the ownership stays within the scope of the project and thus the team as well.
+
+\subsubsection{Issues}
+
+Issue is the most granular entity in the system. It defines a step or set of steps to be performed and is usually assigned to one person. Workflows for reviewing etc. vary from team to team. There is a possibility to break down the work on single issue (if it's especially large one) to sub-tasks, but those are not given IDs, so they are not unique per se. They only serve for clarity and visibility of work being done during the day. When all sub-tasks are finished, the whole issue is finished. That is the state reflected by the API.
 
 \subsection{Semantic Data Manager}
 
@@ -36,6 +51,3 @@ This can be any kind of iOS mobile device - iPhone, iPad, Apple Watch or Apple T
 \subsection{Statistical Front-end}
 
 This component is the most visible one, because it interprets the collected data.
-
-
-Analýza a návrh implementace (včetně diskuse různých alternativ a volby implementačního prostředí).
