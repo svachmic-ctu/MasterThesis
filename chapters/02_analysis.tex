@@ -31,9 +31,23 @@ Product opportunity assessment is a helpful procedure to separate the wheat from
 
 \section{Regulated environment constraints}
 
-Regulated markets, especially pharmaceuticals have multiple rules that need to be carefully followed in order to be allowed to use new IT products. Not only is important how much value does the final product bring to the end user, but also how data storage is handled and how prone it is to exploitations and attacks. 
+Regulated markets, especially pharmaceuticals have multiple rules that need to be carefully followed in order to be allowed to use their new IT products. Not only is important how much value does the final product bring to the end-user, but also how data storage is handled and how prone it is to exploitations and attacks. 
 
-From development process point of view it is equally important to follow specific guidelines and processes during the development phase. Each step has to be carefully documented and approved by specific audit department. For that reason, most of the big pharmaceutical companies use the waterfall model - SDLC (= Software Development Life Cycle), which enables companies to follow specific steps in order to get their software product certified. This all hassle is not for the sake of bureaucracy, it is to protect the customers and increases the level of tracability of a problem, should one ever occur. After all, it is their private data that goes on the server, so it is imperative that it is safe.
+From the development process point of view it is equally important to follow specific guidelines and processes during the development phase. Each step has to be carefully documented and approved by specific audit department. For that reason, most of the big pharmaceutical companies use the waterfall model implemented in SDLC. It enables companies to follow these specific steps in order to get their software product certified. This all hassle is not for the sake of bureaucracy, it is to protect the customers and increases the level of tracability of a problem, should one ever occur. After all, it is theirs and their customers' private data that goes on the server, so it is imperative that it is safe.
+
+The limitation of this approach is the inflexibility of the waterfall model. The strict and rigorous requirements for the waterfall model are not allowing to go back half way through and re-define the objectives of a product. Therefore more and more large companies are trying to implement the best of both worlds \cite{agile-waterfall}.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.4\textwidth]{figures/agile-waterfall}
+    \caption{Balanced Approach to Waterfall and Agile Methodologies}
+\end{figure}
+
+In the context of my work, the approach is that prototypes, PoCs and internal beta versions of new software products are developed using various Agile Methodologies (Scrum and Kanban) and once their purpose is verified, the work done is considered as the starting point for the SDLC.
+
+\section{Current Workflow}
+
+TBD
 
 
 \section{Existing Tools}
@@ -61,8 +75,6 @@ Google Tag Manager is a tag management system that allows quick and easy update 
 A tag is a snippet of code that sends information to Google. It is not necessary to wire it up in code - it works through configuration files from the admin user interface.
 
 Tag Manager is deployed in conjunction with the Firebase SDK, with support for both Android and iOS. The container replaces all other manually-coded tags in the mobile application, including tags from AdWords, Google Analytics etc. It basically builds on top of Google Analytics to make the integration a little easier. It is aimed to be used by people focused mainly on marketing, thus the tool itself serves as an overall performance dashboard. It allows them to create complex tags in a short period of time. Unfortunately it works well only on the web - the tags have to be hard-coded in mobile applications.
-
-\newpage
 
 \begin{figure}[!ht]
 	\centering
