@@ -47,8 +47,19 @@ In the context of my work, the approach is that prototypes, PoCs and internal be
 
 \section{Current Workflow}
 
-TBD
+Currently, the top management is in the USA, while the innovation department is in Prague, Czech Republic. Some members from the top management occasionally fly to Prague, but very irregularly and mostly for a quick check on the overall status of the department. Most of the communication happens remotely - via video conference calls, e-mails etc. Obviously, this produces a lot of noise in the data being transferred. Sometimes some parts are misheard or misunderstood, get lost and are causes for a larger problem in the future.
 
+Not only there is a difference in the culture and language, but it clearly leads to a difference in the domain vocabularies used in everyday work. Tools for productive data exchange are implemented - such as:
+
+\begin{itemize}
+	\item Issue tracker
+	\item Internal Wiki-style website
+	\item Enterprise chat
+\end{itemize}
+
+But the problem is, that there is no tool that unites them all to make sure that the domain vocabularies are the same throughout the whole development phase. If such tool existed, a one that could connect to all of the deployed knowledge systems, it would make communication of measured performance of a product a lot easier.
+
+Let's take a look at the current tools available on the market that specialize in application performance measuring.
 
 \section{Existing Tools}
 
@@ -76,6 +87,8 @@ A tag is a snippet of code that sends information to Google. It is not necessary
 
 Tag Manager is deployed in conjunction with the Firebase SDK, with support for both Android and iOS. The container replaces all other manually-coded tags in the mobile application, including tags from AdWords, Google Analytics etc. It basically builds on top of Google Analytics to make the integration a little easier. It is aimed to be used by people focused mainly on marketing, thus the tool itself serves as an overall performance dashboard. It allows them to create complex tags in a short period of time. Unfortunately it works well only on the web - the tags have to be hard-coded in mobile applications.
 
+\newpage
+
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.65\textwidth]{figures/tagmanager}
@@ -84,9 +97,19 @@ Tag Manager is deployed in conjunction with the Firebase SDK, with support for b
 
 The dashboard is similar in style to the Google Analytics one. Tags can be created, modified and linked with a specific Google Analytics query. The same as for Google Analytics holds for Google Tag Manager - everything is closed source and runs exclusively on Google's servers.
 
-\subsection{Teallium}
+\subsection{Tealium}
 
-TBD
+Tealium is a complex tool combining all marketing tools on the market (Criteo, Socialbakers, but also Google AdWords etc.). It does offer insights into usage and performance and it is very robust. 
+
+\bigbreak
+
+"Combining the leading enterprise tag management solution, an omnichannel customer segmentation and action engine, and a suite of rich data services, the Tealium CDP enables organizations to unlock customer data trapped in siloed marketing systems, build a unified customer view, and take real-time action." \cite{tealium}
+
+\bigbreak
+
+As of December 2015, Tealium successfully completed a Health Insurance Portability and Accountability Act (HIPAA) and Health Information Technology for Economic and Clinical Health Act (HITECH) attestation examination \cite{hipaa}, making it compliant to store data in the cloud securely. The only limitation with this is, that it is only valid in the USA - it does not extend to countries such as China, Japan or Russia, where customer data have to be stored within the country's borders.
+
+The tool itself is intended to be wired up and used as-is. Tealium has their own servers, their won front-end and no API. While for smaller to mid-sized companies it may be sufficient, larger companies require code customizations and integrations into their systems that are currently not provided by this tool.
 
 \subsection{Fabric (formerly Crashlytics)}
 
