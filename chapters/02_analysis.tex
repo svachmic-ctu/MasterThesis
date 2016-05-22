@@ -113,41 +113,123 @@ The tool itself is intended to be wired up and used as-is. Tealium has their own
 
 \subsection{Fabric (formerly Crashlytics)}
 
-Crashlytics was also a star framework. Acquired by Twitter, it is now a vital part all purpose platform - Fabric. Fabric is aside from a reporting tool a full featured developer platform used for variety of tasks and obstacles a developer may face - even beta version distribution that has always been a problem for iOS developers. The Crashlytics reporting has been taken a step further and is not only about reporting crashes. It also reports overall statistics, like Google. One nice feature Fabric has is by acquiring AppSee - a way of visualizing user movement in the app through the usage data. A video of steps users take in their app gives the developer a new perspective on how the app is used.
+Fabric is a platform made by Twitter. Collected and fine-tuned I should say, as it comprises of multiple acquired start-up platforms. The focal point of this platform is a former crash reporting tool Crashlytics \cite{crashlytics}. Aside from that Fabric is a full-featured developer platform used for a variety of tasks. It helps to overcome obstacles a developer may face - even the distribution of beta versions to testers, which has always been a problem for iOS developers.
 
-The source code is closed source and all of the statistics run ot Twitter servers. Data is NOT accessible. The whole platform is free to use. Registration is required along with installation of a custom program to install the framework parts in existing projects.
+\bigbreak
 
+"The Fabric platform is made of three modular kits that address some of the most common and pervasive challenges that all app developers face: stability, distribution, revenue and identity. It combines the services of Crashlytics, MoPub,Twitter and others to help build more stable apps, generate revenue through the world’s largest mobile ad exchange and enable to tap into Twitter’s sign-in systems and rich streams of real-time content for greater distribution and simpler identity. Installation takes minutes, and most features only require a few lines of code." \cite{fabric}
+
+\bigbreak
+
+Fabric has been taken it a step further and is not only about reporting crashes, but it also reports overall statistics, like Google. One really nice feature is a video visualization of user movements in the application. Formerly Appsee \cite{appsee}, now a UX part of Fabric, creates a video of steps users take in the application to give the developer a new perspective on how their application is actually used.
+
+The source code of Fabric is closed source (except for some parts, like Fastlane \cite{fastlane}) and all of the statistics run on Twitter's servers. The Data is not accessible in any other way, than via Fabric's custom dashboards. 
+
+The whole platform is free to use. Registration of developers and applications is required along with the installation of a custom Fabric installation program which integrates the framework into existing projects.
 
 \subsection{App Pulse (formerly Pronq)}
 
-App Pulse is a "new feature by acquisition" - acquired by HP in 2014, it is now part of the portfolio of the new Hewlett Packard Enterprise. It lets users try out their 30-day trial and then charges for everything (no free version).
+Hewlett-Packard Enterprise AppPulse Mobile is a mobile app performance monitoring tool that tracks the real user experience of mobile applications.
 
-App Pulse is very different from GA in a way that it reports everything at all times. The usage is fairly low - tens of kilobytes per week, but it is very thorough. Screen time, actions, movements - it is all there. No setup is required for the start. The SDK they supply simply has to be dragged and dropped in Xcode project and then it starts working out-of-the-box. The only issue is the need to have consistent naming of all views, labels, buttons etc. - as it does everything on its own, without hooking up the actionable items to the framework manually, it can be hard to determine which button was which.
+App Pulse is very different from the previously listed tools in a way that it reports everything at all times. The usage is fairly low - tens of kilobytes per week, but it is very thorough. Screen time, actions, movements - it is all there in the report and no setup is required for the start. That obviously leads to gathering a lot of junk by default.
 
-The tools are closed source and all of the statistics run on HP servers. No API is provided.
+Contrary to iOS standards, App Pulse's SDK is distributed via a compiled library that has to be drag-and-dropped manually into the Xcode project. This is not a good practice, as Apple's updates are regular and oftentimes break a lot of old code, so keeping the SDK up to date manually is a lot of pain.
 
+Because it works out-of-the-box and "automagically" tracks everything that happen in the application, the one big issue is the need to have a consistent naming of all views, labels, buttons etc. - as it does everything on its own, without hooking up the actionable items to the framework manually, it can be hard to determine which button was referred to in the report. One really interesting feature is battery level monitoring, though it is disputable, as the user may have multiple applications running in the background.
 
-\subsection{Crittercism}
+Free 30-day trial allows up to two mobile applications, 25.000 active users per application (everything above is discarded, or offered for the standard monthly price) and access to the App Pulse community. The tools are closed source and all of the statistics runs on Hewlett-Packard Enterprise servers as it is a Software as a Service (= SaaS). No API is provided.
 
-Crittercism doesn't stand out from previously mentioned tools - has their own servers, SDK and works seemlessly. Has some more benchmarking than others, and seems very enterprise oriented - they enable 3rd party API integration into their system to see performance of other APIs used in the application to really find what can be the bottleneck of the app's performance.
+\subsection{Apteligent (previously Crittercism)}
 
-The tools are closed source and all of the statistics run on their servers. API is provided.
+Apteligent doesn't stand out from previously mentioned tools - it runs on Apteligent's own servers, has custom SDK and works seemlessly. While it does have some benchmarking that others don't, at the end of the day, Apteligent again is the owner of your users' data. It seems very enterprise oriented - it enables 3rd party API integration into their system, which enables monitoring the performance of other APIs used in the application to really find what can be the bottleneck of the overall performance.
 
+The tools are closed source and all of the statistics run on Apteligent's servers. API for data retrieval is provided.
 
 \subsection{New Relic}
 
-New Relic somewhat differs in a sense that as the only platform there is a mention on their website about "specific needs" - maybe custom server can be provided. Otherwise it is the same strategy - SDK installed in every app and statistics gets reported periodically. Nice alerting system is optionally provided - when crash occurs, web hook to ticketing system can be defined to streamline bug reports.
+Other than the standard package (SDK, custom servers, periodical reports), New Relic has a nice alerting system - when a crash occurs, a web hook to ticketing system can be defined to streamline bug reports into the issue tracker.
 
-The SDKs are open source, the analytics runs on their servers (~ possibly 'not only'). No API is provided.
+Similar to Tealium, New Relic does stand out with the focus on data encryption:
 
+\bigbreak
+
+"You have complete control over what, if any, sensitive information is sent to New Relic. We are unique among software analytics solutions. When you deploy our agent, by default, our security settings and regulatory compliance exceed industry standards, and all data is encrypted in transit." \cite{newrelic}
+
+\bigbreak
+
+While this is a good start, it simply isn't compliant with the legislation of many countries, to store the users' data on a "random" cloud computer storage. The iOS SDK is distributed in a compiled binary file, having enormous 28,5MB. It is not open sourced. API for data retrieval is provided.
 
 \subsection{Apple}
 
-The last isn't considered framework, but it should be noticed. As companies fight for data from mobile applications - such as Twitter, who gives out their platform free for everybody, naturally the platform owners strive for keeping all that precious data for themselves. Apple announced at WWDC 2015 new iTunes Connect portal redesign and along with it also a new feature - App Analytics. It is fairly thorough in means of usage, downloads, screen time etc, but overall reporting is still very high level and really far from the code. It seems like it is not meant to be a developer tool at all, because there is no in depth code reporting. There are crashes reported, but not very detailed compared to Fabric.
+The last tool I will mention isn't considered as a framework, but is important nonetheless. As companies fight for user data from mobile applications - such as Twitter, who even gives out their platform to everybody for free, naturally the platform owners (Apple and Google) strive for keeping all that precious data for themselves. Apple announced in 2015 at their Wordwide Developer Conference (= WWDC) a new iTunes Connect portal with a new feature - App Analytics. 
 
-These statistics are provided to every single developer of iOS apps for free on the iTunes Connect website. There is no framework and naturally Apple keeps all of the data for themselves.
+\newpage
 
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.65\textwidth]{figures/appleanalytics}
+    \caption{Apple App Analytics Dashboard}
+\end{figure}
 
-\subsection*{Conclusion on tools}
+It is fairly thorough in means of usage, downloads, screen time etc., but the overall reporting seems very marketing oriented. Crashes do get reported, but not they are not very detailed compared to Fabric's Crashlytics tool.
 
-Why are they bad etc etc.
+One of the biggest obstacles every iOS developer faces is the fact that since iOS 5 \cite{udid} it is not possible to uniquely identify a device. Therefore it is virtually impossible to connect two user entries of the same user if the user deletes and redownloads the application. The only way it could be identified is through Apple's own analytics solution. However, the help tooltip for Installations says:
+
+\bigbreak
+
+"The total number of app installations and redownloads. Installations doesn't include app updates."
+
+\bigbreak
+
+Which looks like Apple disabled identification of the same device for themselves as well. 
+
+App Analytics in iTunes Connect is provided to every single developer automatically for free on the iTunes Connect website. There is no framework to be implemented, the statistics is gathered whether the developer likes it or not. Naturally Apple keeps all of the user data on their servers. Even though iTunes Connect has a JSON REST API, none of the sales or analytics data endpoints are exposed.
+
+\newpage
+
+\section{Conclusion on tools}
+
+\begin{enumerate}
+	\item Google Analytics
+		\begin{itemize}
+			\item[{\bf PROS:}] robustness, reliability, reputation
+			\item[{\bf CONS:}] completely proprietary, very low-level
+		\end{itemize}
+	\item Google Tag Manager
+		\begin{itemize}
+			\item[{\bf PROS:}] abstraction above GA, flexibility
+			\item[{\bf CONS:}] completely proprietary, hard initial setup
+		\end{itemize}
+	\item Tealium
+		\begin{itemize}
+			\item[{\bf PROS:}] versatility, omni-channel connectivity
+			\item[{\bf CONS:}] completely proprietary
+		\end{itemize}
+	\item Fabric
+		\begin{itemize}
+			\item[{\bf PROS:}] versatility, community support
+			\item[{\bf CONS:}] completely proprietary, required Twitter registration, data inaccessibility
+		\end{itemize}
+	\item App Pulse
+		\begin{itemize}
+			\item[{\bf PROS:}] automatic initial setup
+			\item[{\bf CONS:}] completely proprietary, non-standard SDK distribution, data inaccessibility
+		\end{itemize}
+	\item Apteligent
+		\begin{itemize}
+			\item[{\bf PROS:}] 3rd party tool integration
+			\item[{\bf CONS:}] completely proprietary
+		\end{itemize}
+	\item New Relic
+		\begin{itemize}
+			\item[{\bf PROS:}] user data encryption
+			\item[{\bf CONS:}] completely proprietary, non-standard SDK distribution
+		\end{itemize}
+	\item Apple
+		\begin{itemize}
+			\item[{\bf PROS:}] no installation or setup required
+			\item[{\bf CONS:}] completely proprietary, data inaccessibility
+		\end{itemize}
+\end{enumerate}
+
+None of the tools meet the requirements for deployment (custom servers) and therefore privacy as well for a global enterprise in regulated market. It is necessary to design an architecture that would fit the needs - run the whole solution on custom servers and enable the mash-up of various knowledge resources deployed across the company.
