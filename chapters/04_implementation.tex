@@ -9,8 +9,6 @@ Semantic Data Manager is deployed in AWS Elastic Beanstalk (= EB), which is ... 
 
 Tracking Engine is also deployed in AWS EB but uses Aurora as database engine. Aurora is ... and has ... configuration, allowing to have really high traffic and maintain its speed and robustness.
 
-Statistical app ...
-
 \section{Issue Tracker}
 
 The issue tracker used in my work environment is JIRA\footnote{No abbreviation here. It is short for GOJIRA, which is Godzilla in Japanese. Rumor has it that it is because the main competing product is Bugzilla.} by Atlassian. It is a standard project management tool providing bug tracking, issue tracking and many other functions. It is conveniently synergistic with other Atlassian tools such as Confluence (for documentation and wiki) and Bitbucket (formerly Stash), which is a server for version control (Mercurial and Git). The advantage is that all these three components are deployed in a Virtual Private Cloud (= VPC) environment - Amazon Web Services. Thus, as a programmer I have fairly easy access to its internal API without being afraid to leak data where it shouldn't.
@@ -44,7 +42,7 @@ JQL stands for JIRA Query Language\cite{jql}. It enables the API user to query t
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.5\textwidth]{figures/jql}
+	\includegraphics[width=0.5\textwidth]{figures/04_implementation/jql}
     \caption{JQL syntax}
 \end{figure}
 
@@ -78,8 +76,6 @@ All communication is handled via HTTP GET and all responses are in JSON format. 
 Interestingly enough, even though, there are two API endpoints, the data is connected, so no further processing was necessary. It is important to note, that the responses are {\bf very} verbose and it is possible to tell in the query to the server not to send some fields back.
 
 \subsection{DSL}
-
-In order to track more than just the beginning and the end of the workflow defined in the scope of the issue, it is necessary to give the project managers a way to define certain observable keywords to pay attention to. Every issue has a field called "description". Usually it contains some human readable set of instructions. Why not piggyback on that and give it just enough structure to make it also computer readable?
 
 I came up with a simple solution - add keyword "WATCH:" on new line and describe what to observe. Parsing is done line by line where the code searches the line for "WATCH:" (case insensitive) and extracts whatever follows until the end of line or occurrence of another "WATCH:". In order not to make it complex, end of line is the end of any description, it does not carry over to the next line.
 
@@ -143,7 +139,7 @@ All three combined resulted in inability to synchronize the play2 application on
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.5\textwidth]{figures/spring}
+	\includegraphics[width=0.5\textwidth]{figures/04_implementation/spring}
     \caption{Spring Boot architecture}
 \end{figure}
 
