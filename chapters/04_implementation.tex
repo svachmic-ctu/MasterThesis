@@ -1,17 +1,18 @@
 \chapter{Implementation}
 
 \section{Deployment}
-// Pretty picture
 
-Everything is deployed in the Amazon Web Services (= AWS) cloud environment.
+The whole solution is designed for and deployed in the Amazon Web Services (= AWS) cloud environment. It is a managed Virtual Private Cloud (= VPC) environment that is only accessible with company credentials and certificates.
 
-Semantic Data Manager is deployed in AWS Elastic Beanstalk (= EB), which is ... Database runs on managed Amazon RDS (Relational Database Service), which is fast, secure and scalable deployment of database engine. The default database engine is MySQL.
-
-Tracking Engine is also deployed in AWS EB but uses Aurora as database engine. Aurora is ... and has ... configuration, allowing to have really high traffic and maintain its speed and robustness.
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.8\textwidth]{figures/04_implementation/deployment_diagram}
+    \caption{AWS System Architecture}
+\end{figure}
 
 \section{Issue Tracker}
 
-The issue tracker used in my work environment is JIRA\footnote{No abbreviation here. It is short for GOJIRA, which is Godzilla in Japanese. Rumor has it that it is because the main competing product is Bugzilla.} by Atlassian. It is a standard project management tool providing bug tracking, issue tracking and many other functions. It is conveniently synergistic with other Atlassian tools such as Confluence (for documentation and wiki) and Bitbucket (formerly Stash), which is a server for version control (Mercurial and Git). The advantage is that all these three components are deployed in a Virtual Private Cloud (= VPC) environment - Amazon Web Services. Thus, as a programmer I have fairly easy access to its internal API without being afraid to leak data where it shouldn't.
+The Issue Tracker used in my work environment is JIRA\footnote{No abbreviation here. It is short for GOJIRA, which is Godzilla in Japanese. Rumor has it that it is because the main competing product is Bugzilla.} by Atlassian. It is a standard project management tool providing bug tracking, issue tracking and many other functions. It is conveniently synergistic with other Atlassian tools such as Confluence (for documentation and wiki) and Bitbucket (formerly Stash), which is a server for version control (Mercurial and Git). The advantage is that all these three components are deployed in the AWS VPC environment. Thus, as a programmer I have fairly easy access to its internal APIs without being afraid to leak data where it shouldn't.
 
 \subsection{API}
 
@@ -38,7 +39,7 @@ What struck me most though, is the absence of OAuth or Token-based communication
 
 \subsubsection{JQL}
 
-JQL stands for JIRA Query Language\cite{jql}. It enables the API user to query the JIRA knowledge graph and extract information.
+JQL stands for JIRA Query Language \cite{jql}. It enables the API user to query the JIRA knowledge graph and extract information.
 
 \begin{figure}[!ht]
 	\centering
@@ -77,7 +78,7 @@ Interestingly enough, even though, there are two API endpoints, the data is conn
 
 \subsection{DSL}
 
-I came up with a simple solution - add keyword "WATCH:" on new line and describe what to observe. Parsing is done line by line where the code searches the line for "WATCH:" (case insensitive) and extracts whatever follows until the end of line or occurrence of another "WATCH:". In order not to make it complex, end of line is the end of any description, it does not carry over to the next line.
+After a discussion with a UX lead, I came up with a simple solution - add keyword "WATCH:" on a new line and describe what to observe. Parsing is done line by line where the code searches the line for "WATCH:" (case insensitive) and extracts whatever follows until the end of line or occurrence of another "WATCH:". In order not to make it complex, end of line is the end of any description, it does not carry over to the next line.
 
 \subsubsection{Examples}
 
@@ -123,7 +124,28 @@ As a user, I want to be able to list all projects in the mobile app currently be
 This yields only one result - "Number projects expanded to the highest detail.". While it seems like it is a good solution, the fact that it seems that way is unfortunately the worst thing about it - because it is hard to discover that there is an error. The programmer sees one observable action item and doesn't see that some got lost during the process, because it was all on one line.
 
 \section{Semantic Data Manager}
+
 The central part of the project should be robust and reliable. For that reason I chose Java as the main technology. For convenience and standardization of the code-base I opted for Spring Boot framework to help me with bootstrapping the heavy work (scheduling, threading, persistence etc.).
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.65\textwidth]{figures/04_implementation/sdm_deployment}
+    \caption{Semantic Data Manager Deployment}
+\end{figure}
+
+Semantic Data Manager is deployed in AWS Elastic Beanstalk (= EB), which is Amazon's Platform as a Service (= PaaS) for Java web applications. It reduces management complexity without restricting choice or control. All it takes is to upload the application, and Elastic Beanstalk automatically handles the details of capacity provisioning, load balancing, scaling, and application health monitoring. \cite{elasticbeanstalk}
+
+\newpage
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.5\textwidth]{figures/04_implementation/eb_flowchart}
+    \caption{AWS Elastic Beanstalk Application Deployment}
+\end{figure}
+
+It is important that the EB application runs in the same availability zone of the VPC as JIRA, otherwise it wouldn't be reachable at all.
+
+The database runs on managed Amazon RDS (Relational Database Service), which is fast, secure and scalable deployment of database engine. It manages backups, software patching, automatic failure detection, and recovery. The default database engine is MySQL.
 
 \subsection{Spring Boot}
 
@@ -137,15 +159,9 @@ I first tried to use play2 framework for educational purposes, but I encountered
 
 All three combined resulted in inability to synchronize the play2 application on port 9000 and NGINX running on port 5000. Unfortunately Netty Server does not support compile-time port configuration and NGINX does not support running Activator to set up the port during run-time, so I had to drop the idea of using play2 as I was simply unable to deploy the application. After researching and discussing with my peers and coworkers I looked up Spring MVC and stumbled upon Spring Boot, also recommended by my classmate. I tried few sample apps and found out it supports WAR packaging, runs natively on Tomcat and comes with almost the same perks like play2. I was ready to give it a try.
 
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width=0.5\textwidth]{figures/04_implementation/spring}
-    \caption{Spring Boot architecture}
-\end{figure}
+"Spring Boot aims to make it easy to create Spring-powered, production-grade applications and services with minimum fuss. It takes an opinionated view of the Spring platform so that new and existing users can quickly get to the bits they need." \cite{spring-boot-blog}
 
-"Spring Boot aims to make it easy to create Spring-powered, production-grade applications and services with minimum fuss. It takes an opinionated view of the Spring platform so that new and existing users can quickly get to the bits they need."\cite{spring-boot-blog}
-
-Primary goals of Spring Boot are\cite{spring-boot-doc}:
+Primary goals of Spring Boot are \cite{spring-boot-doc}:
 
 \begin{itemize}
 	\item Provide a radically faster and widely accessible getting started experience for all Spring development.
@@ -154,12 +170,59 @@ Primary goals of Spring Boot are\cite{spring-boot-doc}:
 	\item Absolutely no code generation and no requirement for XML configuration.
 \end{itemize}
 
-The advantages seemed to be strong, development environment was convenient (IntelliJ IDEA native support) and after some validation with Amazon support regarding AWS EB deployment, I was confident this would be a good choice.
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.4\textwidth]{figures/04_implementation/spring}
+    \caption{Spring Boot architecture}
+\end{figure}
 
-// H2 DB, Flyweight + DB schema
-// REST API + JSON
+The advantages seemed to be strong, development environment was convenient (native support in IntelliJ IDEA) and after some validation with Amazon support regarding AWS EB deployment in our VPC environment, I was confident this would be a good choice.
 
-\subsection{Deployment}
+\subsection{Workflow}
+
+...
+
+\subsection{Technologies Used}
+
+In order to make the development as comfortable as possible, I used various open-source frameworks/technologies to help me out with things that would otherwise take a lot of time
+
+\subsubsection{H2 Database}
+
+H2 is a Java SQL database that runs in-memory. It is great for fast prototyping and validating of design ideas before using production database (RDS). Due to the fact that the entire database is deleted after a server is restarted, it enabled me to quickly change the schema without the need to do tedious database wipes. 
+
+Another great thing is that it only needs to be defined in pom.xml and all other linking is provided out-of-the-box:
+
+\bigbreak
+
+\begin{lstlisting}
+<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+</dependency>
+\end{lstlisting}
+
+Important note: as it wires up all connections automatically, it is absolutely vital not to have {\bf any other} database engine loaded via Maven, otherwise it crashes on start-up of Tomcat.
+
+\subsubsection{Flyway}
+
+Flyway is an open-source database migration tool. It aims to be clean and simple rather than robust and too complex. It uses 6 main commands:
+
+\begin{enumerate}
+	\item Migrate - Migrates the schema to the latest version.
+	\item Clean - Drops all objects in the configured schemas.
+	\item Info - Prints the details and status information about all the migrations.
+	\item Validate - Validates the applied migrations against the available ones.
+	\item Baseline - Baselines an existing database, excluding all migrations upto and including baselineVersion.
+	\item Repair - Repairs the metadata table.
+\end{enumerate}
+
+Since I didn't need to migrate the database, thanks to the flexibility of H2, I mainly used Flyway for cold start (empty database). I defined, what will be in the database after the server has started and Flyway filled it up for me.
+
+\subsection{REST API}
+
+// provides nice API
+
+\subsection{Code Deployment}
 
 The code is packaged by Maven and deployed as WAR file to AWS EB instance, running Tomcat 8 server. There is no need to configure anything with regards to basic networking - AWS EB is a back-to-back fully managed Platform as a Service (PaaS).
 
@@ -177,58 +240,33 @@ There are multiple things to consider when deploying to AWS EB, even though it s
 
  The size of the instance is recommended for any application running JVM. The configuration is Intel Xeon E5-2670 v2 (Ivy Bridge), 4GB SSD storage and 3.75GB RAM. Any additional memory is handled via S3.
 
-// JIRA - pagination problems, service account
-
 \subsection{User Interface}
 
 The component Semantic Data Manager provides REST API to be consumed by any kind of client capable of HTTP requests. Because my specialization are mobile applications, I chose to implement a mobile application for iOS as an administrating user interface for this component.
 
-\subsubsection{Application flow}
+\subsubsection{Application Flow}
 
 SCREENSHOTS
 
-\subsubsection{Technologies used}
+\subsubsection{Technologies Used}
 
-Moya, tracking engine
+Moya, Alamofire
 
 \section{Tracking Engine}
+
+Tracking Engine is also deployed in AWS EB but uses Aurora as database engine. Aurora is ... and has ... configuration, allowing to have really high traffic and maintain its speed and robustness.
 
 Because the tracking engine was developed after the Semantic Data Manager, I opted to use Java again. 
 
 The code is deployed in the same fashion as the Semantic Data Manager.
 
-\section{Tracked Device}
+\section{Tracked Device SDK}
+
 TBD
 
-\section{Time Series Data}
-
-\subsection{Numerous}
-Numerous has two components and uses monolithic git repository to keep everything together. It is designed to be a standalone micro service and can be used outside of the scope of this solution.
-
-\subsubsection{Back-end}
-For computational convenience in future development (= data modeling, model training etc.), Python was selected to be the language this component will be written in.
-
-The code is packaged in Docker image and is deployed in two EC2 t2.medium instances - one for the API and one for the database. The main difference between T2 and M3 is the processor computational power - T2 has Dual Core Intel Xeon 3.3GHz with Turbo. Also it is a Burstable Performance Instance, meaning that it is provided with a baseline level of CPU performance with the ability to burst above. T2 instances are for workloads that don't use the full CPU often or consistently, but occasionally need to burst (computing statistical models for example in my case).
-
-\subsubsection{Front-end}
-Requirements for mobile client were only for iOS devices. Therefore, as no code portability was required, I opted to go native. For native development, Apple's language Swift is used (as of March 2016, in version 2.2). Swift is a general-purpose, multi-paradigm (both object oriented and functional), compiled programming language. It was first released to support iOS and Mac OS X, now supporting also tvOS (Apple TV 4th generation and newer) and watchOS (Apple Watch). Many more cases of use are coming, because Swift compiler has been open-sourced. It is gaining popularity among non-Apple developers mainly due to its safety, robustness and ease of use.
-
-\subsubsection*{Dependencies}
-
-// CocoaPods
-
-\subsubsection*{User Interface}
-
-DASHBOARD screenshot + DETAIL screenshot
-
-Color scheme of the application was provided by a graphical designer. Most of the graphics is set on code level. I am not in favor of bloated projects because of multitude of png files for every possible device. Code generated graphics may introduce some level of complexity, but the space saved on user's device is more important. Even with app-slicing (method of distribution provided by Apple - only the resources needed for your device are downloaded), the amount of space saved is at least 3MB.
-
-// ios-charts
-
-\subsubsection*{Networking}
-
-// Alamofire + VPN
-
-\subsubsection*{Data Model}
+\subsection{Technologies Used}
 
 // Realm.IO
+// Alamofire
+// Moya
+// GZIP
