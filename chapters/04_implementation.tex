@@ -180,7 +180,17 @@ The advantages seemed to be strong, development environment was convenient (nati
 
 \subsection{Workflow}
 
-...
+The server makes the workflow very easy and exposes a REST API to obtain the information. Basic workflow is as follows:
+
+\begin{enumerate}
+	\item List available projects.
+	\item List available issues in a project, along with parsed watched values.
+	\item Prepare a configuration XML file (streamed as UTF8 encoded string) with selected issues.
+\end{enumerate}
+
+No registration, no other setup is necessary - it runs in the VPC environment, so only the employees can access it with their approved devices with the network certificates. Also, JIRA is open for everybody to read, so why bother with extra signing in/out and session management, if it's actually not desired. The component works as-is and serves only one purpose - to connect JIRA and the application code as easily as possible.
+
+\newpage
 
 \subsection{Technologies Used}
 
@@ -218,13 +228,13 @@ Flyway is an open-source database migration tool. It aims to be clean and simple
 
 Since I didn't need to migrate the database, thanks to the flexibility of H2, I mainly used Flyway for cold start (empty database). I defined, what will be in the database after the server has started and Flyway filled it up for me.
 
-\subsection{REST API}
-
-// provides nice API
+\newpage
 
 \subsection{Code Deployment}
 
-The code is packaged by Maven and deployed as WAR file to AWS EB instance, running Tomcat 8 server. There is no need to configure anything with regards to basic networking - AWS EB is a back-to-back fully managed Platform as a Service (PaaS).
+The code is packaged by Maven and deployed as a WAR file to AWS EB instance, running Tomcat 8 server. There is no need to configure anything with regards to basic networking - AWS EB is a back-to-back fully managed Platform as a Service (PaaS). Once deployed to VPC, the only thing that needs to be addressed is the availibility zone - making sure, it runs in the same zone as JIRA so they can communicate. It can be set up very quickly in the configuration section, however it can bring some frustration in the beginning when the developer doesn't know about it.
+
+\bigbreak
 
 There are multiple things to consider when deploying to AWS EB, even though it seems "super-easy" in most instructional videos and ads:
 
@@ -242,23 +252,204 @@ There are multiple things to consider when deploying to AWS EB, even though it s
 
 \subsection{User Interface}
 
-The component Semantic Data Manager provides REST API to be consumed by any kind of client capable of HTTP requests. Because my specialization are mobile applications, I chose to implement a mobile application for iOS as an administrating user interface for this component.
+As mentioned before, Semantic Data Manager provides a REST API to be consumed by any kind of client capable of HTTP requests. Because my specialization are mobile applications, I chose to implement a mobile application for iOS as an administrating user interface for this component.
 
 \subsubsection{Application Flow}
 
-SCREENSHOTS
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.95\textwidth]{figures/04_implementation/add_flow}
+    \caption{Application Flow for Adding Configuration}
+\end{figure}
+
+\paragraph{Creating a new configuration}
+
+\begin{itemize}
+	\item First screen presents the user with currently tracked applications and two actionable items - add button and previously generated configurations. Add button leads to next step in order to generate a new configuration.
+	\item Second screen has all available projects in a list, scrollable with alphabet index on the side. Naturally, selecting one, leads to the next step.
+	\item The third screen shows all available issues along with their watched values. User is free to choose which one should be in the configuration (multiple-choice selection). When ready, the button "Done" proceeds with the process.
+	\item The last screen shows the final configuration file that has been saved on the device. In order to send it to a computer, Dropbox integration has been implemented. When teams cooperate, it allows the user to automatically deliver the configuration file to all members of the team.
+\end{itemize}
+
+\newpage
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.95\textwidth]{figures/04_implementation/reconfig_flow}
+    \caption{Application Flow for Recreating a Configuration}
+\end{figure}
+
+\paragraph{Recreating a previously generated configuration}
+
+\begin{itemize}
+	\item Instead of using the "Add" button the user proceeds with the "View Generated Configurations".
+	\item Second screen shows previously generated configurations - those are immutable, because they are snapshots in time. They can only be re-downloaded again. If metadata has changed on JIRA, it is automatically updated.
+	\item As the issue list is immutable in previously generated configurations, user is automatically redirected to the last screen with the generated configuration file.
+\end{itemize}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.95\textwidth]{figures/04_implementation/quick_summary}
+    \caption{Application Flow for a Quick Overview of Gathered Data}
+\end{figure}
+
+\paragraph{Quick overview of gathered data}
+
+\begin{itemize}
+	\item Tapping on an application in the list of Tracked Applications leads to a quick overview of gathered data.
+	\item The quick list of overview data is a simple list of the applications versions and number of entries for each version. This application doesn't serve as a statistical front-end, this screen only serves for quick overview for the user to know what's the current configuration status in the applications.
+\end{itemize}
 
 \subsubsection{Technologies Used}
 
-Moya, Alamofire
+\paragraph{Moya}\mbox{}\\
+Moya\footnote{\url{https://github.com/Moya/Moya}} is an abstraction layer above an open-source networking library Alamofire\footnote{\url{https://github.com/Alamofire/Alamofire}}. It not only forces a cleaner code structure, but also makes it very well testable as it is a single gateway to the internet.
 
+The main advantages are:
+
+\begin{enumerate}
+	\item Compile-time checking for correct API endpoint accesses.
+	\item Ability to define a clear usage of different endpoints with associated enum values.
+\end{enumerate}
+
+\paragraph{SwiftyDropbox}\mbox{}\\
+SwiftyDropbox\footnote{\url{https://github.com/dropbox/SwiftyDropbox}} is an official framework for iOS to integrate Dropbox functionality directly in the application. In order to use it, it is necessary to register the application in the Dropbox Developer Console. Personal usage requires no review by the Dropbox team, fully integrated one does. For the purposes of this thesis, the personal was sufficient.
+
+\bigbreak
+
+Both Moya and SwiftyDropbox are distributed via standard dependency management tool Cocoapods, which is a similar dependency tool like Maven or Gradle for Java. Written in Ruby, it is less verbose and therefore the dependency management file is fairly short (MBProgressHUD\footnote{\url{https://github.com/jdg/MBProgressHUD}} is a "loading" dialog when network operation is in process):
+
+\bigbreak
+
+\begin{lstlisting}
+platform :ios, '9.0'
+use_frameworks!
+
+pod 'Moya'
+pod 'SwiftyDropbox', '~> 3.0.0'
+pod 'MBProgressHUD', '~> 0.9.1'
+\end{lstlisting}
+
+\newpage
 \section{Tracking Engine}
 
-Tracking Engine is also deployed in AWS EB but uses Aurora as database engine. Aurora is ... and has ... configuration, allowing to have really high traffic and maintain its speed and robustness.
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.8\textwidth]{figures/04_implementation/tracking_diagram}
+    \caption{Tracking Engine Diagram}
+\end{figure}
 
-Because the tracking engine was developed after the Semantic Data Manager, I opted to use Java again. 
+Tracking Engine is also deployed in AWS EB but it its workflow is a bit more complex. The whole system is designed to be horizontally scalable on every component:
 
-The code is deployed in the same fashion as the Semantic Data Manager.
+\begin{enumerate}
+	\item {\bf Gateway} is scaled automatically by the Elastic Beanstalk environment.
+	\item {\bf S3 and SQS} are scaled automatically by AWS.
+	\item {\bf Aurora DB} is scaled automatically by AWS, along with replication and availability.
+	\item {\bf Workers} are scaled automatically instance to instance, or can be deployed multiple times as is necessary. Sometimes it is cheaper to deploy more workers on less powerful instances instead of letting it scale automatically with just few.
+\end{enumerate}
+
+\subsection{Workflow}
+
+The gateway is written in Java, also using the Spring-Boot framework. It's the main intersection for all the requests coming in an out. The workers are also another Spring-Boot application (deployed multiple times). Both of the applications use AWS SDK for connecting to S3 and the Aurora Database. The queue is implemented automatically in Amazon's environment and the only thing that a developer has to define is the method called on the worker (using HTTP POST). If the worker returns "200 OK", the message is considered as processed, so it is crucial to really throw an exception if one occurs, otherwise the message is lost.
+
+\newpage
+
+The general workflow is:
+
+\begin{enumerate}
+	\item When a client application sends in the stats of usage, it is designed to save as much data as possible - it is sent archived using GZIP\footnote{\url{http://www.gzip.org/}}. Because the data is serialized into a JSON file, GZIP performs really well and saves up to 70\% of data otherwise spent on sending the giant list of events.
+	\item The gateway server takes the archive as it is and saves it to S3 object storage.
+	\item After uploading the archive, the gateway server sends a message into the task queue SQS. The message is absolutely straight-forward containing only the name of the file. The name of the file is generated by the gateway server using the UUID library. If that's not enough, S3 makes sure there is never a collision in the names - if there is, it proposes a different name and returns it after the upload, so it's always unique.
+	\item SQS then tries to deliver the message to an available worker. If it cannot be delivered it ends up "in flight", which is Amazon's implementation of dead letter queue. From there the Task queue system tries to deliver with a lowering frequency.
+	\item When the message is delivered to the worker, it obtains the archive from S3, unzips it, parses and saves to the database. When done, it also removes the archive from S3. Then it confirms with "200 OK" marking that the message has been successfully processed.
+\end{enumerate}
+
+\subsection{Aurora Database}
+
+"Amazon Aurora is a fully managed, MySQL-compatible, relational database engine that combines the speed and reliability of high-end commercial databases with the simplicity and cost-effectiveness of open-source databases. It delivers up to five times the performance of MySQL without requiring changes to most of your existing applications." \cite{aurora}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.6\textwidth]{figures/04_implementation/aurora}
+    \caption{Aurora Replication Flow}
+\end{figure}
+
+\newpage
+
+Every application operating with large volumes of data eventually one day runs into the wall having a bottleneck in the database. I decided not to compromise when I was choosing between the database engines. There was also a simple RDS instance available, just like the one I am using in the Semantic Data Manager, but this one will have exponentially more entries in the database then the Semantic Data Manager ever will.
+
+Interestingly enough, Aurora DB wasn't officially supported by in the jdbc library enabling applications to connect to it. I managed to find it was in the Release Candidate 2 of the version 1.1.0 of the library. 
+
+\bigbreak
+
+\begin{lstlisting}
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-aws-jdbc</artifactId>
+	<version>1.1.0.RC2</version>
+</dependency>
+\end{lstlisting}
+
+\bigbreak
+
+The scheduled release for the update is scheduled to June 2016.
+
+\subsection{Deployment}
+
+In order to deploy the Tracking Engine, these prerequisites have to be met:
+
+\begin{enumerate}
+	\item AWS EB application with IAM role to access SQS and S3.
+	\item Aurora Database instance with the same Security Role as the AWS EB application.
+	\item Open 3306 port in the Security Role set to the AWS EB application and the Aurora Database.
+\end{enumerate}
+
+Everything else is automatic when the AWS EB application is set up as described with the Semantic Data Manager. Database URL is for security reasons injected through environment variables (it should never be hard-coded!).
+
+\subsection{Timeseries Application}
+
+The administration application for the Semantic Data Manager does provide a quick overview, but that is not meant to server as a dashboard or any decision-making helper tool. In order to show the power of the gathered data I developed another mobile application meant just for displaying the flow of the data in time.
+
+The requirements for such an applications could be endless - graph mash-ups, benchmarking and everything nice. In order to simply demonstrate the movement in the KPIs, I chose to display the total increase/decrease of entries in the past 5 days.
+
+\newpage
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.95\textwidth]{figures/04_implementation/time_flow}
+    \caption{Time Series Detail}
+\end{figure}
+
+\begin{enumerate}
+	\item After choosing an application through the "Add" button (the list looks identical to any previous lists), the application automatically loads all KPIs available on the server. The number marks the total number of entries in the last 5 days.
+	\item By tapping on a number in the grid, a detailed graph is displayed having total number of entries per day - summing up to the same number as is displayed on the dashboard. The KPI can be deleted from the application so it's not displayed anymore (it remains on the server), because the application persists what was selected in the choice of applications and refreshes it on the next start of the application.
+\end{enumerate}
+
+\subsubsection{Technologies Used}
+
+Aside from the technologies already listed in the administration application (which I have used again) - Moya and MBProgressHUD, I also used:
+
+\paragraph{ios-charts}\mbox{}\\
+
+ios-charts is a charting library based on MPAndroidChart\footnote{\url{https://github.com/danielgindi/Charts}}. It is written in Swift and supports plethora of chart types - line charts, bar charts, pie charts, scatter plots, box plots, bubble charts and radar charts.
+
+The setup is quite "procedural" and requires a lot of boilerplate code, but when it's well set up, the result is very satisfying.
+
+\newpage
+
+\paragraph{Realm.io Database}\mbox{}\\
+
+Realm is a mobile database made by a start-up of the same name. Developed by two engineers from Nokia - Alexander Stigsen and Bjarne Christiansen, it is currently one of the most used frameworks used for iOS development. 
+
+The main advantages are:
+
+\begin{itemize}
+	\item Mobile-first: built from the ground up to run directly inside phones, tablets and wearables.
+	\item Simple: Data is directly exposed as objects and queryable by code.
+	\item Fast: Realm is faster than SQLite on common operations.
+\end{itemize}
+
+The great thing in comparison to CoreData, a native Apple framework on top of SQLite, is not having to keep the context object everywhere, where a anything can be written in the database. Another great tool shipped with the framework is a migration tool, that has a similar philosophy to Flyway described before.
 
 \section{Tracked Device SDK}
 
