@@ -44,7 +44,7 @@ JQL stands for JIRA Query Language \cite{jql}. It enables the API user to query 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.5\textwidth]{figures/04_implementation/jql}
-    \caption{JQL syntax}
+    \caption[JQL syntax]{JQL syntax (source~\protect\cite{jql})}
 \end{figure}
 
 \begin{enumerate}
@@ -133,14 +133,14 @@ The central part of the project should be robust and reliable. For that reason I
     \caption{Semantic Data Manager Deployment}
 \end{figure}
 
-Semantic Data Manager is deployed in AWS Elastic Beanstalk (= EB), which is Amazon's Platform as a Service (= PaaS) for Java web applications. It reduces management complexity without restricting choice or control. All it takes is to upload the application, and Elastic Beanstalk automatically handles the details of capacity provisioning, load balancing, scaling, and application health monitoring. \cite{elasticbeanstalk}
+Semantic Data Manager is deployed in AWS Elastic Beanstalk (= EB), which is Amazon's Platform as a Service (= PaaS) for Java web applications. It reduces management complexity without restricting choice or control. All it takes is to upload the application, and Elastic Beanstalk automatically handles the details of capacity provisioning, load balancing, scaling, and application health monitoring.
 
 \newpage
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.5\textwidth]{figures/04_implementation/eb_flowchart}
-    \caption{AWS Elastic Beanstalk Application Deployment}
+    \caption[AWS Elastic Beanstalk Application Deployment]{AWS Elastic Beanstalk Application Deployment (source~\protect\cite{elasticbeanstalk})}
 \end{figure}
 
 It is important that the EB application runs in the same availability zone of the VPC as JIRA, otherwise it wouldn't be reachable at all.
@@ -159,9 +159,9 @@ I first tried to use play2 framework for educational purposes, but I encountered
 
 All three combined resulted in inability to synchronize the play2 application on port 9000 and NGINX running on port 5000. Unfortunately Netty Server does not support compile-time port configuration and NGINX does not support running Activator to set up the port during run-time, so I had to drop the idea of using play2 as I was simply unable to deploy the application. After researching and discussing with my peers and coworkers I looked up Spring MVC and stumbled upon Spring Boot, also recommended by my classmate. I tried few sample apps and found out it supports WAR packaging, runs natively on Tomcat and comes with almost the same perks like play2. I was ready to give it a try.
 
-"Spring Boot aims to make it easy to create Spring-powered, production-grade applications and services with minimum fuss. It takes an opinionated view of the Spring platform so that new and existing users can quickly get to the bits they need." \cite{spring-boot-blog}
+Primary goals of Spring Boot are:
 
-Primary goals of Spring Boot are \cite{spring-boot-doc}:
+"Spring Boot aims to make it easy to create Spring-powered, production-grade applications and services with minimum fuss. It takes an opinionated view of the Spring platform so that new and existing users can quickly get to the bits they need." \cite{spring-boot-blog}
 
 \begin{itemize}
 	\item Provide a radically faster and widely accessible getting started experience for all Spring development.
@@ -173,7 +173,7 @@ Primary goals of Spring Boot are \cite{spring-boot-doc}:
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.4\textwidth]{figures/04_implementation/spring}
-    \caption{Spring Boot architecture}
+    \caption[Spring Boot architecture]{Spring Boot architecture (source~\protect\cite{spring-boot-doc})}
 \end{figure}
 
 The advantages seemed to be strong, development environment was convenient (native support in IntelliJ IDEA) and after some validation with Amazon support regarding AWS EB deployment in our VPC environment, I was confident this would be a good choice.
@@ -194,11 +194,11 @@ No registration, no other setup is necessary - it runs in the VPC environment, s
 
 \subsection{Technologies Used}
 
-In order to make the development as comfortable as possible, I used various open-source frameworks/technologies to help me out with things that would otherwise take a lot of time
+In order to make the development as comfortable as possible, I used various open-source frameworks/technologies to help me out with things that would otherwise take a lot of time.
 
 \subsubsection{H2 Database}
 
-H2 is a Java SQL database that runs in-memory. It is great for fast prototyping and validating of design ideas before using production database (RDS). Due to the fact that the entire database is deleted after a server is restarted, it enabled me to quickly change the schema without the need to do tedious database wipes. 
+H2 is a Java SQL database that I used in in-memory mode during the development (before switching to RDS). It is great for fast prototyping and validating of design ideas before using production database (RDS). Due to the fact that the entire database is deleted after a server is restarted, it enabled me to quickly change the schema without the need to do tedious database wipes. 
 
 Another great thing is that it only needs to be defined in pom.xml and all other linking is provided out-of-the-box:
 
@@ -331,6 +331,47 @@ pod 'MBProgressHUD', '~> 0.9.1'
 \end{lstlisting}
 
 \newpage
+
+\paragraph{Implementation Speciality}\mbox{}\\
+
+Swift is a multi-paradigm language and allows the combination of object-oriented programming approach and functional programming approach. Because it was released in 2014 and doesn't have any legacy code carrying along, it has these features all built in. Along with proper generics and type safety rules. 
+
+In one of the views (multiple-choice selection of issues), I had an interesting problem that I solved with the combination of the two mentioned paradigms. The situation was, that I had a list of immutable Issue objects representing the data displayed in the list. In order to keep track of which cells have been selected, I had to create another separate array containing boolean values, representing selected/unselected. This is important, ebcause the list view is dynamically generated and not keeping the record somewhere results in complete loss of selection on scroll, as the cells are generated as the user scrolls down/up. Unfortunately this results in having to perform manual filtering through the issues after the user is done selecting them. This is where the multi-paradigm comes in:
+
+\bigbreak
+
+\begin{lstlisting}
+// declaration of properties - when issues are set after downloading, selectedIndicies is populated with false.
+
+var selectedIndicies: [Bool] = []
+var issues: [Dictionary<String, AnyObject>] = [] {
+    didSet {
+        selectedIndicies = [Bool](count:issues.count, repeatedValue: false)
+    }
+}
+
+// filtering
+
+let result = zip(self.issues, self.selectedIndicies).filter{$0.1}.map{$0.0}
+
+// which the same as its longer version
+
+let result2 = zip(self.issues, self.selectedIndicies)
+	.filter{ (sequence: (object: Dictionary<String, AnyObject>, isSelected: Bool)) -> Bool in
+		return object.isSelected
+	}.map{ (filteredSequence: (object: String, isSelected: Bool)) -> String in
+		return filteredSequence.object
+	}
+
+
+\end{lstlisting}
+
+\bigbreak
+
+This feature of the language is great, because it keeps the code clear and structured. There is absolutely no need for long and verbose code structures, using for cycles and being afraid that it might exceed the maximum index of an array. Also, the global functions on collections are better optimized by the compiler, resulting in 100\% speed increase of collection operations.\footnote{\url{http://stackoverflow.com/questions/29301577/performance-issue-while-finding-min-and-max-with-functional-approach/29305300\#29305300}}
+
+\newpage
+
 \section{Tracking Engine}
 
 \begin{figure}[!ht]
@@ -345,7 +386,7 @@ Tracking Engine is also deployed in AWS EB but it its workflow is a bit more com
 	\item {\bf Gateway} is scaled automatically by the Elastic Beanstalk environment.
 	\item {\bf S3 and SQS} are scaled automatically by AWS.
 	\item {\bf Aurora DB} is scaled automatically by AWS, along with replication and availability.
-	\item {\bf Workers} are scaled automatically instance to instance, or can be deployed multiple times as is necessary. Sometimes it is cheaper to deploy more workers on less powerful instances instead of letting it scale automatically with just few.
+	\item {\bf Workers} are scaled automatically instance to instance (vertical scaling), or can be deployed multiple times as is necessary (horizontal scaling - in the console, simply choose "Clone Environment"). Sometimes it is cheaper to deploy more workers on less powerful instances instead of letting it scale automatically with just few.
 \end{enumerate}
 
 \subsection{Workflow}
@@ -366,12 +407,12 @@ The general workflow is:
 
 \subsection{Aurora Database}
 
-"Amazon Aurora is a fully managed, MySQL-compatible, relational database engine that combines the speed and reliability of high-end commercial databases with the simplicity and cost-effectiveness of open-source databases. It delivers up to five times the performance of MySQL without requiring changes to most of your existing applications." \cite{aurora}
+Amazon Aurora is a fully managed, MySQL-compatible, relational database engine that combines the speed and reliability of high-end commercial databases with the simplicity and cost-effectiveness of open-source databases. It delivers up to five times the performance of MySQL.
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.6\textwidth]{figures/04_implementation/aurora}
-    \caption{Aurora Replication Flow}
+    \caption[Aurora Replication Flow]{Aurora Replication Flow (source~\protect\cite{aurora})}
 \end{figure}
 
 \newpage
@@ -392,25 +433,86 @@ Interestingly enough, Aurora DB wasn't officially supported by in the jdbc libra
 
 \bigbreak
 
-The scheduled release for the update is scheduled to June 2016.
+The release of the official update is scheduled to June 2016.
 
 \subsection{Deployment}
 
-In order to deploy the Tracking Engine, these prerequisites have to be met:
+The networking capabilities of AWS are very broad and because the architecture of the Tracking Engine is quite complex, it is important to first introduce couple entities in the AWS cloud environment.
+
+\subsubsection*{Identity and Access Management}
+
+Identity and Access Management (= IAM) is a web service that allows the management of access to compute, storage, database and application services in the AWS cloud. It uses concepts known in other similar services in different environments - Users, Groups and Permissions. It is very detailed and allows specifications of which users have access to certain services, the kinds of actions they can perform and which resources are available (ranging from virtual machines, database instances and even the ability to filter database query results). Good thing is, that it works seamlessly with already existing identity management solutions, such as Active Directory\footnote{\url{https://technet.microsoft.com/en-us/library/dd448614.aspx}}
+
+\subsubsection*{Permissions}
+
+Permissions allow specifications of who has access to AWS resources, and what actions can be performed on those resources. Every IAM user starts with no permissions at all. In other words, by default, users can do nothing, not even view their own access keys. Permissions can be added to the user (attach a policy to the user) or the user can be assigned to a group that has the desired permissions.
+
+Permissions can be assigned either as identity-based or as resource-based:
+
+\begin{itemize}
+	\item Identity-based, or IAM permissions are attached to an IAM user, group, or role and allow specification of what that user, group, or role can do.
+	\item Resource-based permissions are attached to a resource. Resource-based permissions allow specification of who has access to the resource (S3, SQS) and what actions they can perform on it. Resource-based policies are inline only, not managed.
+\end{itemize}
+
+\subsubsection*{Policies}
+
+To assign permissions to a user, group, role, or resource, a policy has to be created. Policy is a document that explicitly lists permissions.
+
+Policy allows specification of the following:
+
+\begin{itemize}
+	\item Actions: which actions should be allowed. Every service has its own set of actions.
+	\item Resources: which resources should be allowed to perform actions on.
+	\item Effect: which effect will a request to access by a user - deny or allow.
+\end{itemize}
+
+All policies are defined by a JSON file and can be assigned in totally granular fashion to every service and user.
+
+
+\subsubsection*{Security Group}
+
+A security group acts as a virtual firewall that controls the traffic for one or more instances. When an instance is launched, it can be associated with one or more security groups. Each group has rules that can be added that allow traffic to or from its associated instances. All rules for a security group can be modified at any time. The new rules are automatically applied to all instances that are associated with the security group. When a decision has to be made whether to allow traffic to reach an instance, all the rules from all the security groups associated with the instance are evaluated.
+
+\bigbreak
+
+The whole AWS cloud environment is very complex and has way more to offer than just the couple points I listed above. For the sake of deploying my architecture it is sufficient. For anything else, AWS documentation\footnote{\url{http://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html}} is of very high quality and virtually any question can be answered there.
+
+\newpage
+
+Having the knowledge of all necessary foundations of the inner workflow in AWS, all of these prerequisites have to be met in order to deploy the Tracking Engine:
 
 \begin{enumerate}
-	\item AWS EB application with IAM role to access SQS and S3.
-	\item Aurora Database instance with the same Security Role as the AWS EB application.
-	\item Open 3306 port in the Security Role set to the AWS EB application and the Aurora Database.
+	\item AWS EB application with IAM role with permissions to access SQS and S3.
+	\item Policy on S3 for the IAM role set up to be able to read/write via JSON configuration:
+	
+\begin{lstlisting}
+"Statement": [
+		{
+			"Sid": "sid123456789",
+			"Effect": "Allow",
+			"Principal": "*",
+			"Action": "s3:*",
+			"Resource": [
+				"arn:aws:s3:::iam-role-name/*",
+				"arn:aws:s3:::iam-role-name"
+			]
+		}
+	]
+\end{lstlisting}	
+	
+	\item Aurora Database instance up and running with the same Security Group as the AWS EB application.
+	\item Open 3306 port in the Security Group between the AWS EB application and the Aurora Database.
 \end{enumerate}
 
 Everything else is automatic when the AWS EB application is set up as described with the Semantic Data Manager. Database URL is for security reasons injected through environment variables (it should never be hard-coded!).
 
 \subsection{Timeseries Application}
 
-The administration application for the Semantic Data Manager does provide a quick overview, but that is not meant to server as a dashboard or any decision-making helper tool. In order to show the power of the gathered data I developed another mobile application meant just for displaying the flow of the data in time.
+The administration application for the Semantic Data Manager does provide a quick overview, but that is not meant to serve as a dashboard or any decision-making helper tool. It's merely just a peak on whether or not the desired application version is being tracked. Clearly that is not optimal for deriving any conclusions.
 
-The requirements for such an applications could be endless - graph mash-ups, benchmarking and everything nice. In order to simply demonstrate the movement in the KPIs, I chose to display the total increase/decrease of entries in the past 5 days.
+In order to show the power of the gathered data I developed another mobile application meant just for displaying the flow of the data in time. It is inspired by the popular application Numerous\footnote{\url{http://numerousapp.com/}}, available on the Apple App Store.
+
+The requirements for such an applications could be endless - graph mash-ups, benchmarking and so much more. In order to simply demonstrate the movement in the KPIs and the potential in the data, I chose to display the total increase/decrease of entries during the last 5 days.
 
 \newpage
 
@@ -451,13 +553,171 @@ The main advantages are:
 
 The great thing in comparison to CoreData, a native Apple framework on top of SQLite, is not having to keep the context object everywhere, where a anything can be written in the database. Another great tool shipped with the framework is a migration tool, that has a similar philosophy to Flyway described before.
 
+\subsubsection{API used}
+
+Obviously, the goal is to send the data in as condensed format as possible. For those reasons, the automatically exposed API by Spring-Boot was too verbose. In order to load the data, I created another Controller endpoint in the Tracking Engine application that those handles special requests from the Timeseries application:
+
+\begin{enumerate}
+	\item \emph{/mobile/applicationEntryTypes} - returns a list of all KPIs in an application.
+	
+\begin{lstlisting}
+{ "entryTypes" : [
+		{"applicationName":"SAUI Test","applicationVersion":"1.0.3","name":"Performance measurement switch","total":12654}
+	]
+}	
+\end{lstlisting}	
+	
+	\item \emph{/mobile/applicationEntrySummary} - returns 5 day entry count for a given KPI.
+	
+\begin{lstlisting}
+{ "entries":[ ... ],
+  "metadata":[
+		{"entries":11,"timestamp":1464048000}, ...
+	]
+}
+\end{lstlisting}	
+\end{enumerate}
+
+\newpage
+
 \section{Tracked Device SDK}
 
-TBD
+In order to integrate the domain vocabulary generated by the Semantic Data Manager, it is necessary to have an interpreter of such vocabulary. For the implementation for Apple devices, I chose native development in Swift.
+
+As stated in the previous chapter, the SDK has two layers - the configuration interpreter and an interface to log an event.
+
+\subsection{Interpreter}
+
+The interpreter enables the storing interface to call functions on it that extract the information from the configuration file, without the need to handle the low-level file access. It is made to be as precise as possible - no errors allowed. When the configuration file is not present it calls a system level fatalError function. 
+
+Methods exposed:
+
+\begin{itemize}
+	\item \emph{getDictionary} - returns the whole configuration file as a dictionary object
+	\item \emph{getURL} - returns the URL of the Tracking Engine
+	\item \emph{getAllActions} - returns all actions available in the dictionary
+\end{itemize}
+
+\subsection{Interface for storing}
+
+The interface for storing provides couple functions:
+
+\begin{enumerate}
+	\item \emph{startEvent(itemIndex: Int)} - logs beginning of an event on the given index in the configuration.
+	\item \emph{finishEvent(itemIndex: Int)} - logs the end of an event on the given index in the configuration.
+	\item \emph{watchValue(itemIndex: Int, valueIndex: Int)} - logs an action of watched value on the given index assigned to an event on the given index in the configuration.
+	\item \emph{reportData(compressed: Bool, success: (() -> Void)?)} - reports data to the server, either in compressed format or not and after finishing it calls the optional (not mandatory to use) completion closure.
+\end{enumerate}
+
+If an event is to be logged and the interpreter doesn't find it, fatalError is called again.
+
+\newpage
+
+To ensure clean code and the level of "security"\footnote{Security here refers to the Defensive Programming coding style leading to reduced number of bugs and problems.} of the code Swift's if-let and guard statements came in very handy:
+
+\bigbreak
+
+\begin{lstlisting}
+func startEvent(itemIndex: Int) {
+	guard let action = ConfigurationReader.getAllActions()[safe: itemIndex]
+		else {
+			fatalError("Action at given index (\(itemIndex)) does not exist!")
+	}
+        
+	if let name = action["name"] as? String, issueID = action["issueID"] as? String {
+		self.addEvent("START", name: name, issueID: issueID)
+	} else {
+		fatalError("Action at given index (\(itemIndex)) has details in wrong format!")
+	}
+}
+\end{lstlisting}	
+
+\bigbreak
+
+The guard statement and the if-let statement are somewhat similar - they make sure that an object the developer is trying to access is not null and will not cause any problems. The main difference is that if-let goes inside curly brackets and creates more complexity by indented code. Guard statement allows in-line handling, however it does not allow chaining of the statements, like the if-let statement does.
+
+In fact, even more interesting feature is used in the code snippet above - Swift extension. The safe look-up of an action in the array of all actions is a separate function written as an extension to the standard collection functions in Swift. The extension is written this way:
+
+\bigbreak
+
+\begin{lstlisting}
+extension Array {
+    subscript (safe index: Int) -> Element? {
+        return indices ~= index ? self[index] : nil
+    }
+}
+\end{lstlisting}	
+
+\bigbreak
+
+There is no need to override the whole Array object and implement a new method. The compiler takes it as a new first-class function on the collection and it can be used in the whole project.
+
+\newpage
+
+\subsection{Distribution}
+
+When a developer wants to use an external library, there are two standard ways how to get it to the project:
+
+\begin{enumerate}
+	\item Cocoapods
+	\item Carthage
+\end{enumerate}
+
+Cocoapods is more invasive - it links the source code into the project as another sub-targets and creates a new workspace for Xcode. Sometimes it can be frustrating, especially during clean builds when having more than 5 dependencies can take 5 minutes or more to fully compile.
+
+Carthage is a non-invasive way of importing dependencies, however it is not standardized by Apple - it requires initial setup in Xcode and is subject to break during Xcode updates.
+
+\bigbreak
+
+Requirements were to create both, which is creating a Podspec file for Cocoapods and a Cart file for Carthage:
+
+\begin{lstlisting}
+// Cartfile
+github "Moya/Moya" ~> 6.4.0
+github "realm/realm-cocoa" ~> 0.99
+github "nicklockwood/GZIP" ~> 1.1
+
+//Podspec
+Pod::Spec.new do |s|
+  s.name         = "SAUI"
+  s.version      = "1.0"
+  s.summary      = "Network abstraction layer written in Swift"
+  s.author             = { "Michal Svacha" => "svachmic@fel.cvut.cz" }
+  s.ios.deployment_target = '8.0'
+  s.osx.deployment_target = '10.9'
+  s.watchos.deployment_target = '2.0'
+  s.tvos.deployment_target = '9.0'
+  s.source       = { :git => "https://url/SAUI.git", :tag => s.version }
+  s.default_subspec = "Core"
+
+  s.subspec "Core" do |ss|
+    ss.source_files  = "Source/*.swift", "Source/Plugins/*swift"
+    ss.dependency "Moya", "~> 6.4.0"
+    ss.dependency "RealmSwift", "~> 0.99"
+    ss.dependency "GZIP", "~> 1.1"
+    ss.framework  = "Foundation"
+  end
+end
+
+\end{lstlisting}	
+
+\newpage
+
+\subsection{Workflow}
+
+The usage of the framework after linking is very straight forward. The main object to use is called \emph{Reporter} - it is singleton and accessible via it's proeprty \emph{sharedInstance}. The Reporter class is the interface for storing and offers all methods listed in previous section.
+
+It can be initially set up whether the reporting to the server will be handled automatically or not. If not, the developer has to handle the upload scheduling himself and call the function \emph{reportData} whenever needed. If the automatic reporting is set up, an NSTimer thread object runs in the background, firing every 120 seconds to check if there is anything in the database to be reported. If yes, it gets uploaded to the server.
 
 \subsection{Technologies Used}
 
-// Realm.IO
-// Alamofire
-// Moya
-// GZIP
+Aside from all the technologies previously listed - Moya and Realm, in this component I had to also use Alamofire from which I tried to abstract myself away with Moya. Unfortunately Moya does not support uploading binary data via POST, so I had to use a lower-level tool to get the archived data to the server.
+
+Another technology I used here is a GZIP library handling the archiving of data. The library comes with a choice of level of encryption, which for a text can be naturally selected to the highest number. The object that is archived can only be an NSData object, so I serialized the JSON that is supposed to be archived into UTF8-encoded data:
+
+\bigbreak
+
+\begin{lstlisting}
+let jsonData = try! NSJSONSerialization.dataWithJSONObject(events, options: NSJSONWritingOptions.PrettyPrinted)
+let archived = jsonData.gzippedDataWithCompressionLevel(1.0)!
+\end{lstlisting}	
