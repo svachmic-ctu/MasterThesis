@@ -447,6 +447,8 @@ Identity and Access Management (= IAM) is a web service that allows the manageme
 
 Permissions allow specifications of who has access to AWS resources, and what actions can be performed on those resources. Every IAM user starts with no permissions at all. In other words, by default, users can do nothing, not even view their own access keys. Permissions can be added to the user (attach a policy to the user) or the user can be assigned to a group that has the desired permissions.
 
+\newpage
+
 Permissions can be assigned either as identity-based or as resource-based:
 
 \begin{itemize}
@@ -681,13 +683,13 @@ github "nicklockwood/GZIP" ~> 1.1
 Pod::Spec.new do |s|
   s.name         = "SAUI"
   s.version      = "1.0"
-  s.summary      = "Network abstraction layer written in Swift"
+  s.summary      = "SAUI Swift framework for logging events."
   s.author             = { "Michal Svacha" => "svachmic@fel.cvut.cz" }
   s.ios.deployment_target = '8.0'
   s.osx.deployment_target = '10.9'
   s.watchos.deployment_target = '2.0'
   s.tvos.deployment_target = '9.0'
-  s.source       = { :git => "https://url/SAUI.git", :tag => s.version }
+  s.source       = { :git => "https://url/SAUI-Swift.git", :tag => s.version }
   s.default_subspec = "Core"
 
   s.subspec "Core" do |ss|
