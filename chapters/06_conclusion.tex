@@ -9,10 +9,43 @@ In the third and fourth part, I designed and developed the system into a fully v
 In the last part, I set myself a goal to test the system from many aspects - idea, usabilty and performance. While some tests went better than the others, it brought me so many valuable insights and pointed out places with room for improvement that I hadn't even considered before. For that I see the tests as an immense success, regardless of the actual results - it shows that the idea is valid, people are interested in it and there is something to continue working on.
 
 \section{Technical debt}
-TBD
+
+Naturally, when a project delivery is time-boxed, certain functions/features get a higher priority than others along the way. This project has been no exception.
+
+\subsection{Semantic Data Manager}
+
+\begin{enumerate}
+	\item SSL certificate is only self-signed.
+	\item JIRA communication could be abstracted out into another layer to make sure when REST API changes that the rewrites would only happen in the parser.
+	\item There is no mechanism for versioning of the configurations.
+\end{enumerate}
+
+\subsection{Administration Application}
+
+\begin{enumerate}
+	\item Several UI elements need more fine-grained graphics to improve the usability.
+	\item There should be a search bar in the issues.
+	\item Dropbox integration is only one out of many other possibilities - Syncplicity, E-mail etc. should be supported as well.
+\end{enumerate}
+
+\subsection{Tracking Engine}
+
+\begin{enumerate}
+	\item SSL certificate is only self-signed.
+	\item There is no authentication method for the applications sending data.
+	\item The analysis of the data development is currently limited to time series.
+\end{enumerate}
+
+\subsection{Timeseries Application}
+
+\begin{enumerate}
+	\item There is no user management built in the application.
+	\item KPIs can't be added per KPI, only per application.
+	\item There is no graph mash-up, only number analysis per day.
+\end{enumerate}
 
 \section{Future development}
-TBD
 
-\section{Closing remarks}
-TBD
+There is absolutely no shortage of work that can be done on the project. The project is healthy and stable and there are plenty of features that can be implemented in order to drive this project even further. I am very optimistic thanks to the support of all the people that got interested in the project. 
+
+One step at a time, the best thing to do is to take a look and revisit the foundations of the project - the Semantic Data Manager and the Tracking Engine. When these two components are without any technical debt and robust, only the sky is the limit.
