@@ -33,6 +33,7 @@
 \usepackage{setspace}
 \usepackage[hyphens]{url}
 \usepackage{pgfplots}
+\usepackage{forest}
 
 \usepackage{misc/k336_thesis_macros} % specialni makra pro formatovani DP a BP
  % muzete si vytvorit i sva vlastni v souboru k336_thesis_macros.sty
@@ -138,7 +139,7 @@ unicode=true,
 	 \newcommand\Faculty{Faculty of Electrical Engineering}
 	 \newcommand\University{Czech Technical University in Prague}
 	 \newcommand\labelSupervisor{Supervisor}
-	 \newcommand\labelStudProgram{Study Programme} 
+	 \newcommand\labelStudProgram{Study Program} 
 	 \newcommand\labelStudBranch{Field of Study}
 }
 
@@ -151,7 +152,15 @@ unicode=true,
 
 \acknowledgements
 \noindent
-I would like to thank dearly to my cat, dog and goldfish I never had. You were a true inspiration to me. With you, I would have never made this document happen. Also, my PlayStation 3 proved to be an amazing tool to keep me sane while writing this thesis. Thank you SONY.
+I would like to thank dearly my supervisor, Ivo Malý, for his infinite supply of patience and faith in me. Many times, I struggled in the dark, but I always found peace and calm after our sessions that helped me pull through.
+
+\bigbreak
+
+I would also like to thank my family for giving me the time to be alone with my thoughts and not freaking out when I was a hermit, working on my thesis.
+
+\bigbreak
+
+Last but not least, I would like to thank my lovely Emily for reading my scribbles and making sense out of them.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%   Prohlaseni / Declaration 
@@ -174,7 +183,7 @@ The focal part of this thesis is the focus on user interactions - the collection
 \vskip 2.1\baselineskip
 
 \noindent
-Momentální status quo ve sběru dat je sbírání a ukládání všeho, co je k dispozici. Tento přístup dal vzniknout trendu posledních let - "Velká data". Tedy data, která jsou  nepohodlně objemná pro zpracování, výklad, a odvozování závěrů. Když se společnost rozhodne, že chce využít velká data, dopadne to většinou tak, že má příliš mnoho informací bez žádné reálné hodnoty. Každé oddělení používá vlastní doménové názvosloví a tudíž chybí synchronizace a porozumění. Tato diplomová práce se snaží využít této příležitosti neuspořádanosti pro spojení všech konců dohromady a vytvořit tak komplexní řešení.
+Momentální status quo ve sběru dat je sbírání a ukládání všeho, co je k dispozici. Tento přístup dal vzniknout trendu posledních let - "Velká data". Tedy data, která jsou  nepohodlně objemná pro zpracování, výklad, a odvozování závěrů. Když se společnost rozhodne, že chce využít velká data, dopadne to většinou tak, že má příliš mnoho informací bez žádné reálné hodnoty. Každé oddělení používá vlastní doménové názvosloví a tudíž chybí synchronizace a porozumění. Tato diplomová práce se snaží využít této příležitosti neuspořádanosti pro spojení všech konců dohromady a vytvoření tak komplexního řešení.
 
 Těžištěm práce je zaměření se na uživatelské interakce - sběr dat z mobilních aplikací. Než nějaký sběr vůbec nastane, je třeba mít interakce definované - tedy "co", "kdy" a "proč". Počínaje projektovým managementem, přes architekturu a softwarové inženýrství až k interpretaci výsledků jako konečným bodem - spojení všech kroků k vytvoření uceleného náhledu.
 
@@ -236,7 +245,6 @@ Těžištěm práce je zaměření se na uživatelské interakce - sběr dat z m
 \appendix
 
 \include{chapters/AX_abbrev}
-\include{chapters/AX_install}
 \include{chapters/AX_cd}
 
 %*****************************************************************************
