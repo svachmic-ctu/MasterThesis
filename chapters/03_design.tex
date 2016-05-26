@@ -10,7 +10,7 @@
 
 \subsubsection*{Description}
 
-The workflow should be as linear as possible with respect to the natural flow of data. The central knowledge base is the issue tracker, because that's where the project management team defines objectives set by the top management. The UX team has specific needs for measuring certain tasks in the application so it is absolutely valid that they would add their needs in the issue tracker.
+The workflow should be as linear as possible mirroring the natural flow of data. The central knowledge base is the issue tracker, because that's where the project management team defines the objectives set by the top management. The UX team specifically needs to measure certain tasks in the application so it is absolutely valid that they would add their needs to the issue tracker.
 
 From then on, the domain vocabulary is created and stored for everybody to see. In order to measure the tasks performed by the developer (for example "implement login form") using the same domain vocabulary, something has to deliver a computer-readable version of the vocabulary. That is the task of the Semantic Data Manager - to extract the knowledge from the Issue Tracker and serve it to the developer so he/she can use it easily within the application.
 
@@ -18,11 +18,11 @@ The user data is then reported to the Tracking Engine using the same domain voca
 
 \section{Issue Tracker}
 
-Issue Tracker is a software deployed in a company for managing and tracking the work done by multiple employees across different departments. It serves the project management team to define projects, milestones and to break the work down to tasks and sub-tasks. Those are then assigned to specific people and marked as done when they're done and reviewed. It is considered a good practice that when a task/issue is created and assigned, it becomes immutable with respect to its name (and of course project label and ID). The detailed description and comments can be added, but in order to preserve some stability, the name should remain the same.
+Issue Tracker is a software deployed in a company for managing and tracking the work done by multiple employees across different departments. It allows the project management team to define projects and milestones, and to break the work down into tasks and sub-tasks. Those are then assigned to specific people and marked as complete when they're done and reviewed. It is considered good practice for a task/issue to become immutable with respect to its name (and of course project label and ID) when it is created and assigned. A detailed description and comments can be added, but in order to preserve some stability, the name should remain the same.
 
-There are many solutions on the market, such as Bugzilla, JIRA or open-source Redmine. Most of the solutions provide a REST API for 3rd party integrations.
+There are many solutions on the market, such as Bugzilla, JIRA or open-source Redmine. Most of the solutions provide a REST API for third-party integration.
 
-\subsection{Knowledge structure}
+\subsection{Knowledge Structure}
 
 Every company uses a slightly different way of structuring their knowledge in their project management tools. In my situation, the structure is as follows:
 
@@ -32,25 +32,25 @@ Every company uses a slightly different way of structuring their knowledge in th
 	\item Issues
 \end{itemize}
 
-Different tools have different naming conventions, but this structure is as generalized as possible so it is applicable to most of the tools on the market.
+Different tools have different naming conventions, but this structure is as general as possible so it is applicable to most of the tools on the market.
 
 \subsubsection{Teams}
 
-Everybody is distributed into teams in various departments. While departments are important in the company structure, in the project management, teams are more relevant. Every team has its own Project Board (either Scrum or Kanban) that reflects the state of the team in time - how much work has been done, what will be done and what's currently being done.
+Everybody is distributed into teams in various departments. While departments are important in the company structure, in project management, teams are more relevant. Every team has its own Project Board (either Scrum or Kanban), which reflects the state of the team at the time - how much work has been done, what will be done and what's currently being done.
 
 \subsubsection{Projects}
 
-Each team works on their own projects. Often times, collaboration does occur, but the owner of the project is still the team. If other person collaborates with other team, it is reflected in his/her work statistics  (storypoints, hours spent), but the ownership stays within the scope of the project and thus the team as well.
+Each team works on their own projects. Often-times, collaboration does occur, but the owner of the project is still the team. If another person collaborates with another team, it is reflected in his/her work statistics (storypoints, hours spent), but the ownership stays within the scope of the project and thus withing the team as well.
 
 \subsubsection{Issues}
 
-Issue is the most granular entity in the system. It defines a step or set of steps to be performed and is usually assigned to one person. Workflows for reviewing etc. vary from team to team. There is a possibility to break down the work on single issue (if it's especially large one) to sub-tasks, but those are not given IDs, so they are not unique per se. They only serve for clarity and visibility of work being done during the day. When all sub-tasks are finished, the whole issue is finished. That is the state reflected by the API.
+An issue is the most granular entity in the system. It defines a step or set of steps to be performed and is usually assigned to one person. Workflows for reviewing etc. vary from team to team. It is possible to break down the work on a single issue (if it's an especially large one) into sub-tasks, but those are not given IDs, so they are not unique per se. They only serve to increase the clarity and visibility of work being done during the day. When all sub-tasks are finished, the whole issue is finished. That is the state reflected by the API.
 
 \subsection{Knowledge Extraction}
 
-The extraction of the knowledge will build on top of the premise that some parts of the data at certain point of time are immutable. In order to make it as bulletproof as possible, I will only assume immutability of the name of the issue, its automatically assigned identifier (ID) and, obviously, the project it belongs to. Everything else is considered fully mutable and is welcome to be changed in order to provide flexibility.
+The extraction of the knowledge will build on the premise that some parts of the data at a certain point of time are immutable. In order to make it as bulletproof as possible, I will only assume immutability of the name of the issue, its automatically assigned identifier (ID) and, obviously, the project it belongs to. Everything else is considered fully mutable and is free to be changed in order to provide flexibility.
 
-The idea behind the tracking itself in the same domain vocabulary is that the beginning of an issue/task/sub-task and the end is reported. Giving a direct feedback of success or failure of the implemented workflow.
+The idea behind the tracking itself in the same domain vocabulary is that the beginning and end of an issue/task/sub-task are reported, giving a direct feedback on the success or failure of the implemented workflow.
 
 \subsubsection*{Example}
 
@@ -80,13 +80,13 @@ SA-01 & Form for user registration. & Start & ...\\
 \label{tab:ex_db}
 \end{table}
 
-It is clear what is measured here\footnote{The "..." marks obvious missing columns, such as timestamp, device type etc.} - the success of a registration of a new user. For each commenced registration, there is a "Start" entry. For each successfully finished registration, there is a "Finish" entry. There was not defined any other KPI to measure, so without storing any junk data, it is easy to calculate the percentage ($2/3$) of users that successfully registered versus that didn't ($1/3$).
+It is clear what is measured here\footnote{The "..." marks obvious missing columns, such as timestamp, device type, etc.} - the success of a registration of a new user. For each registration that is begun, there is a "Start" entry. For each successfully finished registration, there is a "Finish" entry. No other KPI was defined to be measured, so without storing any junk data, it is easy to calculate the percentage ($2/3$) of users that successfully registered versus the percentage that didn't ($1/3$).
 
-\subsubsection{DSL}
+\subsubsection{Domain-specific Language}
 
-In order to track more than just the beginning and the end of the workflow defined in the scope of the issue, it is necessary to give the stakeholders a way to define certain observable events to pay attention to. Usually, every issue has a field specifically for description, that contains some human-readable set of instructions. Why not piggyback on that and give it just enough structure to make it also computer-readable?
+In order to track more than just the beginning and the end of the workflow defined in the scope of the issue, it is necessary to give the stakeholders a way to define certain observable events to pay attention to. Usually, every issue has a field specifically for description, which contains some human-readable set of instructions. Why not piggyback on that and give it just enough structure to make it also computer-readable?
 
-Let's assume it would be desired, to measure how many times the user clicks on the help button in the registration form. Then the database table would be extended to:
+Let's imagine we want to measure how many times the user clicks on the help button in the registration form. Then the database table would be extended to:
 
 \bigbreak
 
@@ -108,31 +108,31 @@ SA-01 & Help button pressed. & Action & ...\\
 \label{tab:ex_db2}
 \end{table}
 
-Another type has appeared in the database table - "Action". Some measurable item, linked to the registration form itself. Neatly labeled with the relevant Issue ID, easy to find and in the same domain vocabulary as was intended.
+Another type has appeared in the database table - "Action". This represents some measurable item, linked to the registration form itself, neatly labeled with the relevant Issue ID, easy to find and in the same domain vocabulary as was intended.
 
 \section{Semantic Data Manager}
 
-This is the most crucial component of the whole solution - connecting the Issue Tracker and tracking capabilities. The main task is to obtain actionable items from the Issue Tracker and create computer-readable domain vocabularies for application engineers to include in their source code. The computer-readable format should in the for of a configuration file. Therefore, there must be a framework that parses such configuration file, and offers in-code assistance with implementing the tracking itself. It goes without saying that the usage should be as smooth as possible.
+This is the most crucial component of the whole solution - connecting the Issue Tracker and tracking capabilities. The main task is to obtain actionable items from the Issue Tracker and create computer-readable domain vocabularies for application engineers to include in their source code. The computer-readable format should in the form of a configuration file. Therefore, there must be a framework that parses such a configuration file and offers in-code assistance for implementing the tracking itself. It goes without saying that the usage should be as smooth as possible.
 
-The produced configurations should be persisted for the sake of reproducibility. Though it should avoid storing any metadata (detailed measurement description) as it is subject to change (DSL used in the description). Only the unique issue identifier and its name should be persisted, in order to be able to trace back what was the configuration file meant for. Persisting anything else could lead to disconnection between data and that's exactly what I am trying to solve.
+The configurations produced should be persisted for the sake of reproducibility, though storing any metadata (detailed measurement description) should be avoided as it is subject to change (DSL used in the description). Only the unique issue identifier and its name should be persisted, in order to be able to trace back what the configuration file was meant for. Persisting anything else could lead to disconnection between data and that's exactly what I am trying to solve.
 
 Connecting to the Issue Tracker will be handled via its REST API. It should automatically retrieve a list of all projects and their subsequent issues/tasks/sub-tasks that may or may not contain specific metadata regarding fine-grained measurement demands.
 
-Semantic Data Manager will run as a stand-alone microservice and will provide a REST API for any kind of UI to be implemented on top of it. It can easily be a website, mobile application or integration into a 3rd party tool.
+The Semantic Data Manager will run as a stand-alone microservice and will provide a REST API for any kind of UI to be implemented on top of it. It can easily be a website, mobile application or integration into a third-party tool.
 
 \section{Tracking Engine}
 
-The Tracking Engine itself is a completely separate component from the Semantic Data Manager. It can easily be any existing solution - Google Analytics or Google Tag Manager. It should be a stand-alone service into which data is stored using the already obtained domain vocabularies.
+The Tracking Engine itself is a completely separate component from the Semantic Data Manager. It can easily be any existing solution, such as Google Analytics or Google Tag Manager. It should be a stand-alone service in which data is stored using the domain vocabularies already obtained.
 
-For reasons listed in previous chapter, mainly in-house data storage, I will also develop this component and deploy it alongside the Semantic Data Manager. This gives me more flexibility in optimizing the storage and provides the company with a custom tailored solution.
+For reasons listed in the previous chapter, mainly in-house data storage, I will also develop this component and deploy it alongside the Semantic Data Manager. This gives me more flexibility in optimizing the storage and provides the company with a custom tailored solution.
 
 \section{Tracked Device SDK}
 
 The SDK has to have two layers:
 
 \begin{enumerate}
-	\item Interpreter of the configuration file from the Semantic Data Manager - load the vocabularies and provide them during the development.
-	\item Interface for storing the events - should the Tracking Engine change, the only thing that would be necessary in the application code would be to download dependencies for it and implement the interface. This approach ensures that the in-code measuring always remains the same, only the underlying engine changes.
+	\item An interpreter of the configuration file from the Semantic Data Manager - load the vocabularies and provide them during the development.
+	\item An interface for storing the events - should the Tracking Engine change, the only thing that would be necessary in the application code would be to download dependencies for it and implement the interface. This approach ensures that the in-code measuring always remains the same; only the underlying engine changes.
 \end{enumerate}
 
 The whole company runs on iOS devices, so I will develop an iOS framework to be used while developing applications. While iOS may seem limited to only iPhones and iPads, the ecosystem actually enables the frameworks to be written for all Apple platforms - iOS, tvOS and Mac OS X.

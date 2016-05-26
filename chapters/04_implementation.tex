@@ -12,30 +12,30 @@ The whole solution is designed for and deployed in the Amazon Web Services (= AW
 
 \section{Issue Tracker}
 
-The Issue Tracker used in my work environment is JIRA\footnote{No abbreviation here. It is short for GOJIRA, which is Godzilla in Japanese. Rumor has it that it is because the main competing product is Bugzilla.} by Atlassian. It is a standard project management tool providing bug tracking, issue tracking and many other functions. It is conveniently synergistic with other Atlassian tools such as Confluence (for documentation and wiki) and Bitbucket (formerly Stash), which is a server for version control (Mercurial and Git). The advantage is that all these three components are deployed in the AWS VPC environment. Thus, as a programmer I have fairly easy access to its internal APIs without being afraid to leak data where it shouldn't.
+The Issue Tracker used in my work environment is JIRA\footnote{No abbreviation here. It is short for GOJIRA, which is Godzilla in Japanese. Rumor has it that it was called this because the main competing product is Bugzilla.} by Atlassian. It is a standard project management tool providing bug tracking, issue tracking and many other functions. It is conveniently synergistic with other Atlassian tools such as Confluence (for documentation and wiki) and Bitbucket (formerly Stash), which is a server for version control (Mercurial and Git). The advantage is that all these three components are deployed in the AWS VPC environment. Thus, as a programmer, I have fairly easy access to its internal APIs without being afraid to leak data by mistake.
 
 \subsection{API}
 
-JIRA REST API is quite a mess, which is because Atlassian didn't develop all their products from scratch (Bitbucket was acquired) and it is still visible that the usage isn't seamless. In order to access Teams, Projects and Issues, two API endpoints have to be used:
+JIRA REST API is quite a mess, because Atlassian didn't develop all their products from scratch (Bitbucket was acquired) and it is still visible that the usage isn't seamless. In order to access Teams, Projects and Issues, two API endpoints have to be used:
 
 \begin{enumerate}
 	\item JIRA REST API
 	\item JIRA REST AGILE
 \end{enumerate}
 
-Both of them are APIs (= Application Programming Interface), but I will use their names to distinguish one from another.Both are similar, but also slightly different from each other. 
+Both of them are APIs (= Application Programming Interface), but I will use their names to distinguish between them. They are similar, but also slightly different from each other. 
 
 To illustrate the subtle differences that drive any software engineer mad:
 
 \begin{itemize}
-	\item When JIRA REST API is used to obtain the issues, the resulting array uses pagination, because there could be a lot of issues and loading them all at once could take a significant amount of time. In order to determine whether the array I have is final, a parameter "total" is present in the response. This parameter tells how many issues in total there are. In order to load the whole list, it is necessary to keep track how many there are, and how many are left on the stack.
+	\item When JIRA REST API is used to obtain the issues, the resulting array uses pagination, because there could be a lot of issues and loading them all at once could take a significant amount of time. In order to determine whether the array I have is final, a parameter "total" is present in the response. This parameter shows how many issues there are in total. In order to load the whole list, it is necessary to keep track how many there are, and how many are left on the stack.
 	
-	\item When JIRA REST AGILE is used to obtain the teams, the resulting array also uses pagination. In order to determine whether the array I have is final, a parameter called "isLast" is present in the response, having, surprisingly, a boolean value true/false. Obviously, when the value is false, one has to load the next page with the last index that came before.
+	\item When JIRA REST AGILE is used to obtain the teams, the resulting array also uses pagination. In order to determine whether the array I have is final, a parameter called "isLast" is present in the response, which has, surprisingly, a boolean value true/false. Obviously, when the value is false, one has to load the next page with the last index that came before.
 \end{itemize}
 
-There are plenty of these little surprises that are so easily breakable with any update of the whole system. I honestly do not know, why it isn't the top priority for Atlassian to unite their APIs.
+There are plenty of these little surprises that are completely fragile with any update of the whole system. I honestly do not know why it isn't the top priority for Atlassian to unite their APIs.
 
-What struck me most though, is the absence of OAuth or Token-based communication. Every query is done via basic auth. While for development it is fine as it allowed me to quickly prototype on top of the API without the need to develop a complex token manager, for production it is quite inconvenient. Even though SSL certificates are all valid and in place, it simply is a terrible architectural choice to not have a proper way to authenticate other applications using the APIs.
+What struck me most though, is the absence of OAuth or Token-based communication. Every query is done via basic auth. While for development it is fine as it allowed me to quickly prototype on top of the API without the need to develop a complex token manager, for production it is quite inconvenient. Even though the SSL certificates are all valid and in place, it simply is a terrible architectural choice to not have a proper way to authenticate other applications using the APIs.
 
 \subsubsection{JQL}
 
@@ -51,7 +51,7 @@ JQL stands for JIRA Query Language \cite{jql}. It enables the API user to query 
 	\item {\bf Field} - Fields are different types of information in the system. JIRA fields include priority, fixVersion, issue type, etc.
 	\item {\bf Operator} - Operators are the heart of the query. They relate the field to the value. Common operators include equals (=), not equals (!=), less than (<), etc.
 	\item {\bf Value} – Values are the actual data in the query. They are usually the item for which we are looking.
-	\item {\bf Keyword} – Keywords are specific words in the language that have special meaning. In this post we will be focused on AND and OR.
+	\item {\bf Keyword} – Keywords are specific words in the language that have a special meaning. In this post we will be focused on AND and OR.
 \end{enumerate}
 
 I used JQL in order to get all issues for a certain project:
@@ -60,13 +60,13 @@ I used JQL in order to get all issues for a certain project:
 "https://jiraURL/issues/search?jql=project=SAUI"
 \end{lstlisting}
 
-Here I used simple query to search all issues where the project is SAUI (= Semantic Analysis of User Interactions). All URL encoders handle the double "= =" and it has never happened to me, that it would encode the parameters badly.
+Here I used a simple query to search for all issues where the project is SAUI (= Semantic Analysis of User Interactions). All URL encoders handle the double "= =" and it has never happened to me that the parameters would be encoded badly.
 
 It can obviously be even more powerful, but I was glad it helped me easily get what I needed.
 
-\subsubsection{Methods used}
+\subsubsection{Methods Used}
 
-All communication is handled via HTTP GET and all responses are in JSON format. Cross-site request forgery (= CSRF/XSRF) token system is disabled.
+All communication is handled via HTTP GET and all responses are in JSON format. The cross-site request forgery (= CSRF/XSRF) token system is disabled.
 
 \begin{enumerate}
 	\item To get all teams, method {\bf /board} has to be called on JIRA REST AGILE.
@@ -74,11 +74,11 @@ All communication is handled via HTTP GET and all responses are in JSON format. 
 	\item To get all issues, method {\bf /search} with JQL query has to be called on JIRA REST API.
 \end{enumerate}
 
-Interestingly enough, even though, there are two API endpoints, the data is connected, so no further processing was necessary. It is important to note, that the responses are {\bf very} verbose and it is possible to tell in the query to the server not to send some fields back.
+Interestingly enough, even though there are two API endpoints, the data is connected, so no further processing was necessary. It is important to note that the responses are {\bf very} verbose and it is possible to say in the query to the server not to send some fields back.
 
 \subsection{DSL}
 
-After a discussion with a UX lead, I came up with a simple solution - add keyword "WATCH:" on a new line and describe what to observe. Parsing is done line by line where the code searches the line for "WATCH:" (case insensitive) and extracts whatever follows until the end of line or occurrence of another "WATCH:". In order not to make it complex, end of line is the end of any description, it does not carry over to the next line.
+After a discussion with a UX lead, I came up with a simple solution - add keyword "WATCH:" on a new line and describe what to observe. Parsing is done line by line where the code searches the line for "WATCH:" (case insensitive) and extracts whatever follows until the end of line or an occurrence of another "WATCH:". In order not to make it complex, end of line is the end of any description; it does not carry over to the next line.
 
 \subsubsection{Examples}
 
@@ -121,7 +121,7 @@ This is a semi-success, almost a failure, but it still yields all the informatio
 As a user, I want to be able to list all projects in the mobile app currently being tracked along with the number of tracked versions in the tracking system. WATCH: Number projects expanded to the highest detail. WATCH: Filters used to extract information
 \end{lstlisting}
 
-This yields only one result - "Number projects expanded to the highest detail.". While it seems like it is a good solution, the fact that it seems that way is unfortunately the worst thing about it - because it is hard to discover that there is an error. The programmer sees one observable action item and doesn't see that some got lost during the process, because it was all on one line.
+This yields only one result - "Number projects expanded to the highest detail.". While it seems like it is a good solution, the fact that it seems that way is unfortunately the worst thing about it, because it is hard to discover that there is an error. The programmer sees one observable action item and doesn't see that some got lost during the process, because it was all on one line.
 
 \section{Semantic Data Manager}
 
@@ -133,7 +133,7 @@ The central part of the project should be robust and reliable. For that reason I
     \caption{Semantic Data Manager Deployment}
 \end{figure}
 
-Semantic Data Manager is deployed in AWS Elastic Beanstalk (= EB), which is Amazon's Platform as a Service (= PaaS) for Java web applications. It reduces management complexity without restricting choice or control. All it takes is to upload the application, and Elastic Beanstalk automatically handles the details of capacity provisioning, load balancing, scaling, and application health monitoring.
+Semantic Data Manager is deployed in AWS Elastic Beanstalk (= EB) \cite{vliet2011elastic}, which is Amazon's Platform as a Service (= PaaS) for Java web applications. It reduces management complexity without restricting choice or control. All it requires is uploading the application, and Elastic Beanstalk automatically handles the details of capacity provisioning, load balancing, scaling, and application health monitoring.
 
 \newpage
 
@@ -145,21 +145,21 @@ Semantic Data Manager is deployed in AWS Elastic Beanstalk (= EB), which is Amaz
 
 It is important that the EB application runs in the same availability zone of the VPC as JIRA, otherwise it wouldn't be reachable at all.
 
-The database runs on managed Amazon RDS (Relational Database Service), which is fast, secure and scalable deployment of database engine. It manages backups, software patching, automatic failure detection, and recovery. The default database engine is MySQL.
+The database runs on a managed Amazon RDS (Relational Database Service), which is a fast, secure and scalable deployment of a database engine. It manages backups, software patching, automatic failure detection, and recovery. The default database engine is MySQL.
 
 \subsection{Spring Boot}
 
-I first tried to use play2 framework for educational purposes, but I encountered too many obstacles deploying play2 application to AWS: 
+I first tried to use the play2 framework for educational purposes, but I encountered too many obstacles deploying the play2 application to AWS: 
 
 \begin{itemize}
-	\item It does not support WAR packaging.\footnote{There is an unofficial tool that packages the code in a WAR file, but it is not recommended for production environment. Being constrained by highly regulated market, something that already says that it is not production ready is an instant "No thanks".}
-	\item It is not possible to run play2 packages (packaged by Activator tool) on Tomcat Server.
-	\item It comes with its own Netty Server, which is really clumsy to set up in AWS environment.
+	\item It does not support WAR packaging.\footnote{There is an unofficial tool that packages the code in a WAR file, but it is not recommended for a production environment. Being constrained by a highly regulated market, something that already says that it is not production ready is an instant "No thanks".}
+	\item It is not possible to run play2 packages (packaged by Activator tool) on a Tomcat Server.
+	\item It comes with its own Netty Server, which is really clumsy to set up in an AWS environment.
 \end{itemize}
 
-All three combined resulted in inability to synchronize the play2 application on port 9000 and NGINX running on port 5000. Unfortunately Netty Server does not support compile-time port configuration and NGINX does not support running Activator to set up the port during run-time, so I had to drop the idea of using play2 as I was simply unable to deploy the application. After researching and discussing with my peers and coworkers I looked up Spring MVC and stumbled upon Spring Boot, also recommended by my classmate. I tried few sample apps and found out it supports WAR packaging, runs natively on Tomcat and comes with almost the same perks like play2. I was ready to give it a try.
+All three combined resulted in an inability to synchronize the play2 application on port 9000 and NGINX running on port 5000. Unfortunately the Netty Server does not support compile-time port configuration and NGINX does not support running Activator to set up the port during run-time, so I had to drop the idea of using play2 as I was simply unable to deploy the application. After researching and discussing with my peers and coworkers, I looked up Spring MVC and stumbled upon Spring Boot, also recommended by my classmate. I tried a few sample apps and found out that it supports WAR packaging, runs natively on Tomcat and comes with almost the same perks as play2. I was ready to give it a try.
 
-Primary goals of Spring Boot are:
+The primary goals of Spring Boot are:
 
 "Spring Boot aims to make it easy to create Spring-powered, production-grade applications and services with minimum fuss. It takes an opinionated view of the Spring platform so that new and existing users can quickly get to the bits they need." \cite{spring-boot-blog}
 
@@ -176,19 +176,19 @@ Primary goals of Spring Boot are:
     \caption[Spring Boot architecture]{Spring Boot architecture (source~\protect\cite{spring-boot-doc})}
 \end{figure}
 
-The advantages seemed to be strong, development environment was convenient (native support in IntelliJ IDEA) and after some validation with Amazon support regarding AWS EB deployment in our VPC environment, I was confident this would be a good choice.
+The advantages seemed to be strong, the development environment was convenient (native support in IntelliJ IDEA) and after some validation from Amazon support regarding AWS EB deployment in our VPC environment, I was confident this would be a good choice.
 
 \subsection{Workflow}
 
-The server makes the workflow very easy and exposes a REST API to obtain the information. Basic workflow is as follows:
+The server makes the workflow very easy and exposes a REST API to obtain the information. The basic workflow is as follows:
 
 \begin{enumerate}
 	\item List available projects.
 	\item List available issues in a project, along with parsed watched values.
-	\item Prepare a configuration XML file (streamed as UTF8 encoded string) with selected issues.
+	\item Prepare a configuration XML file (streamed as a UTF8 encoded string) with selected issues.
 \end{enumerate}
 
-No registration, no other setup is necessary - it runs in the VPC environment, so only the employees can access it with their approved devices with the network certificates. Also, JIRA is open for everybody to read, so why bother with extra signing in/out and session management, if it's actually not desired. The component works as-is and serves only one purpose - to connect JIRA and the application code as easily as possible.
+No registration or other setup is necessary - it runs in the VPC environment, so only the employees can access it with their approved devices with the network certificates. Also, JIRA is open for everybody to read, so why bother with extra signing in/out and session management, if it's actually not desired. The component works as-is and serves only one purpose: to connect JIRA and the application code as easily as possible.
 
 \newpage
 
@@ -198,7 +198,7 @@ In order to make the development as comfortable as possible, I used various open
 
 \subsubsection{H2 Database}
 
-H2 is a Java SQL database that I used in in-memory mode during the development (before switching to RDS). It is great for fast prototyping and validating of design ideas before using production database (RDS). Due to the fact that the entire database is deleted after a server is restarted, it enabled me to quickly change the schema without the need to do tedious database wipes. 
+H2 is a Java SQL database that I used in in-memory mode during the development (before switching to RDS). It is great for fast prototyping and validating of design ideas before using the production database (RDS). Due to the fact that the entire database is deleted after a server is restarted, it enabled me to quickly change the schema without the need to do tedious database wipes. 
 
 Another great thing is that it only needs to be defined in pom.xml and all other linking is provided out-of-the-box:
 
@@ -215,44 +215,44 @@ Important note: as it wires up all connections automatically, it is absolutely v
 
 \subsubsection{Flyway}
 
-Flyway is an open-source database migration tool. It aims to be clean and simple rather than robust and too complex. It uses 6 main commands:
+Flyway is an open-source database migration tool. It aims to be clean and simple rather than robust and too complex. It uses six main commands:
 
 \begin{enumerate}
 	\item Migrate - Migrates the schema to the latest version.
 	\item Clean - Drops all objects in the configured schemas.
 	\item Info - Prints the details and status information about all the migrations.
 	\item Validate - Validates the applied migrations against the available ones.
-	\item Baseline - Baselines an existing database, excluding all migrations upto and including baselineVersion.
+	\item Baseline - Baselines an existing database, excluding all migrations up to and including baselineVersion.
 	\item Repair - Repairs the metadata table.
 \end{enumerate}
 
-Since I didn't need to migrate the database, thanks to the flexibility of H2, I mainly used Flyway for cold start (empty database). I defined, what will be in the database after the server has started and Flyway filled it up for me.
+Since I didn't need to migrate the database, thanks to the flexibility of H2, I mainly used Flyway for cold start (empty database). I defined what would be in the database after the server had started and Flyway filled it up for me.
 
 \newpage
 
 \subsection{Code Deployment}
 
-The code is packaged by Maven and deployed as a WAR file to AWS EB instance, running Tomcat 8 server. There is no need to configure anything with regards to basic networking - AWS EB is a back-to-back fully managed Platform as a Service (PaaS). Once deployed to VPC, the only thing that needs to be addressed is the availibility zone - making sure, it runs in the same zone as JIRA so they can communicate. It can be set up very quickly in the configuration section, however it can bring some frustration in the beginning when the developer doesn't know about it.
+The code is packaged by Maven and deployed as a WAR file to AWS EB instance, running a Tomcat 8 server. There is no need to configure anything with regards to basic networking - AWS EB is a back-to-back fully managed Platform as a Service (PaaS). Once deployed to VPC, the only thing that needs to be addressed is the availability zone - making sure it runs in the same zone as JIRA so they can communicate. It can be set up very quickly in the configuration section; however it can cause some frustration at the beginning when the developer doesn't know about it.
 
 \bigbreak
 
 There are multiple things to consider when deploying to AWS EB, even though it seems "super-easy" in most instructional videos and ads:
 
 \begin{enumerate}
-	\item Contrary to programmer's logic, one has to first create an "Application" and under that custom "Environments". In other words, Application is the main context, and environments are servers running in the same context, by default having the permission to communicate between each other.
+	\item Contrary to programmer's logic, one first has to create an "Application" and under that custom "Environments". In other words, Application is the main context, and environments are servers running in the same context, by default having the permission to communicate between each other.
 	\item In Environment setup, we can choose either a Web Server Environment or a Worker Environment. Web Server is the hub of any application and is used in both Semantic Data Manager and Tracking Engine. Workers are only used in Tracking Engine and will be explained later.
-	\item Chosen configuration was obviously Tomcat and I also opted for automatic load balancing and scaling.
-	\item Opting to automatically create an RDS instance along with the environment is a really bad design. Once an environment is terminated, so is the database instance which causes a serious data loss.
-	\item In order to access the servers via SSH, it is necessary to define a EC2 Security Group and assign it accordingly. Otherwise, all outside access is prohibited.
-	\item It is also crucial to wisely choose the instance type. I opted for m3.medium, because Java applciations by themselves are quite demanding and I didn't want to risk being on the edge when strange errors occur because of insufficient memory capacity.
-	\item Permissions and roles are absolutely crucial when it is desired to connect the Environment with other AWS services, such as object storage (S3 = Simple Storage Service) or a messaging queue (SQS = Simple Queue Service).
+	\item The chosen configuration was obviously Tomcat and I also opted for automatic load balancing and scaling.
+	\item Opting to automatically create an RDS instance along with the environment is a really bad design. Once an environment is terminated, so is the database instance, which causes a serious data loss.
+	\item In order to access the servers via SSH, it is necessary to define an EC2 Security Group and assign it accordingly. Otherwise, all outside access is prohibited.
+	\item It is also crucial to choose the instance type wisely. I opted for m3.medium, because Java applications by themselves are quite demanding and I didn't want to risk being on the edge when strange errors occur because of insufficient memory capacity.
+	\item Permissions and roles are absolutely crucial when you want to connect the Environment with other AWS services, such as object storage (S3 = Simple Storage Service) or a messaging queue (SQS = Simple Queue Service).
 \end{enumerate}
 
  The size of the instance is recommended for any application running JVM. The configuration is Intel Xeon E5-2670 v2 (Ivy Bridge), 4GB SSD storage and 3.75GB RAM. Any additional memory is handled via S3.
 
 \subsection{User Interface}
 
-As mentioned before, Semantic Data Manager provides a REST API to be consumed by any kind of client capable of HTTP requests. Because my specialization are mobile applications, I chose to implement a mobile application for iOS as an administrating user interface for this component.
+As mentioned before, Semantic Data Manager provides a REST API to be consumed by any kind of client capable of HTTP requests. Because my specialization is mobile applications, I chose to implement a mobile application for iOS as an administrating user interface for this component.
 
 \subsubsection{Application Flow}
 
@@ -265,9 +265,9 @@ As mentioned before, Semantic Data Manager provides a REST API to be consumed by
 \paragraph{Creating a new configuration}
 
 \begin{itemize}
-	\item First screen presents the user with currently tracked applications and two actionable items - add button and previously generated configurations. Add button leads to next step in order to generate a new configuration.
-	\item Second screen has all available projects in a list, scrollable with alphabet index on the side. Naturally, selecting one, leads to the next step.
-	\item The third screen shows all available issues along with their watched values. User is free to choose which one should be in the configuration (multiple-choice selection). When ready, the button "Done" proceeds with the process.
+	\item The first screen presents the user with currently tracked applications and two actionable items - an add button and previously generated configurations. The add button leads to the next step in order to generate a new configuration.
+	\item The second screen has all available projects in a list, scrollable with an alphabet index on the side. Naturally, selecting one leads to the next step.
+	\item The third screen shows all available issues along with their watched values. The user is free to choose which one should be in the configuration (multiple-choice selection). When ready, the button "Done" proceeds with the process.
 	\item The last screen shows the final configuration file that has been saved on the device. In order to send it to a computer, Dropbox integration has been implemented. When teams cooperate, it allows the user to automatically deliver the configuration file to all members of the team.
 \end{itemize}
 
@@ -282,9 +282,9 @@ As mentioned before, Semantic Data Manager provides a REST API to be consumed by
 \paragraph{Recreating a previously generated configuration}
 
 \begin{itemize}
-	\item Instead of using the "Add" button the user proceeds with the "View Generated Configurations".
-	\item Second screen shows previously generated configurations - those are immutable, because they are snapshots in time. They can only be re-downloaded again. If metadata has changed on JIRA, it is automatically updated.
-	\item As the issue list is immutable in previously generated configurations, user is automatically redirected to the last screen with the generated configuration file.
+	\item Instead of using the "Add" button, the user proceeds with the "View Generated Configurations".
+	\item The second screen shows previously generated configurations. Those are immutable, because they are snapshots in time. They can only be re-downloaded again. If metadata has changed on JIRA, it is automatically updated.
+	\item As the issue list is immutable in previously generated configurations, the user is automatically redirected to the last screen with the generated configuration file.
 \end{itemize}
 
 \begin{figure}[!ht]
@@ -297,13 +297,13 @@ As mentioned before, Semantic Data Manager provides a REST API to be consumed by
 
 \begin{itemize}
 	\item Tapping on an application in the list of Tracked Applications leads to a quick overview of gathered data.
-	\item The quick list of overview data is a simple list of the applications versions and number of entries for each version. This application doesn't serve as a statistical front-end, this screen only serves for quick overview for the user to know what's the current configuration status in the applications.
+	\item The quick list of overview data is a simple list of the application's versions and the number of entries for each version. This application doesn't serve as a statistical front-end; this screen only serves as a quick overview for the user to know the current configuration status in the applications.
 \end{itemize}
 
 \subsubsection{Technologies Used}
 
 \paragraph{Moya}\mbox{}\\
-Moya\footnote{\url{https://github.com/Moya/Moya}} is an abstraction layer above an open-source networking library Alamofire\footnote{\url{https://github.com/Alamofire/Alamofire}}. It not only forces a cleaner code structure, but also makes it very well testable as it is a single gateway to the internet.
+Moya\footnote{\url{https://github.com/Moya/Moya}} is an abstraction layer above an open-source networking library Alamofire\footnote{\url{https://github.com/Alamofire/Alamofire}}. It not only forces a cleaner code structure, but also makes it very easily testable as it is a single gateway to the internet.
 
 The main advantages are:
 
@@ -313,11 +313,11 @@ The main advantages are:
 \end{enumerate}
 
 \paragraph{SwiftyDropbox}\mbox{}\\
-SwiftyDropbox\footnote{\url{https://github.com/dropbox/SwiftyDropbox}} is an official framework for iOS to integrate Dropbox functionality directly in the application. In order to use it, it is necessary to register the application in the Dropbox Developer Console. Personal usage requires no review by the Dropbox team, fully integrated one does. For the purposes of this thesis, the personal was sufficient.
+SwiftyDropbox\footnote{\url{https://github.com/dropbox/SwiftyDropbox}} is an official framework for iOS to integrate Dropbox functionality directly into the application. In order to use it, it is necessary to register the application in the Dropbox Developer Console. Personal usage requires no review by the Dropbox team, though fully integrated usage does. For the purposes of this thesis, personal was sufficient.
 
 \bigbreak
 
-Both Moya and SwiftyDropbox are distributed via standard dependency management tool Cocoapods, which is a similar dependency tool like Maven or Gradle for Java. Written in Ruby, it is less verbose and therefore the dependency management file is fairly short (MBProgressHUD\footnote{\url{https://github.com/jdg/MBProgressHUD}} is a "loading" dialog when network operation is in process):
+Both Moya and SwiftyDropbox are distributed via a standard dependency management tool Cocoapods, which is a similar dependency tool to Maven or Gradle for Java. Written in Ruby, it is less verbose and therefore the dependency management file is fairly short (MBProgressHUD\footnote{\url{https://github.com/jdg/MBProgressHUD}} is a "loading" dialog when a network operation is in process):
 
 \bigbreak
 
@@ -334,9 +334,9 @@ pod 'MBProgressHUD', '~> 0.9.1'
 
 \paragraph{Implementation Speciality}\mbox{}\\
 
-Swift is a multi-paradigm language and allows the combination of object-oriented programming approach and functional programming approach. Because it was released in 2014 and doesn't have any legacy code carrying along, it has these features all built in. Along with proper generics and type safety rules. 
+Swift is a multi-paradigm language and allows the combination of an object-oriented programming approach and a functional programming approach. Because it was released in 2014 and doesn’t carry any legacy code along with it, it has these features all built in, along with proper generics and type safety rules. 
 
-In one of the views (multiple-choice selection of issues), I had an interesting problem that I solved with the combination of the two mentioned paradigms. The situation was, that I had a list of immutable Issue objects representing the data displayed in the list. In order to keep track of which cells have been selected, I had to create another separate array containing boolean values, representing selected/unselected. This is important, ebcause the list view is dynamically generated and not keeping the record somewhere results in complete loss of selection on scroll, as the cells are generated as the user scrolls down/up. Unfortunately this results in having to perform manual filtering through the issues after the user is done selecting them. This is where the multi-paradigm comes in:
+In one of the views (multiple-choice selection of issues), I had an interesting problem that I solved with a combination of the two paradigms mentioned. The situation was that I had a list of immutable Issue objects representing the data displayed in the list. In order to keep track of which cells had been selected, I had to create another separate array containing boolean values, representing selected/unselected. This is important, because the list view is dynamically generated and not keeping the record somewhere results in complete loss of selection on scroll, as the cells are generated as the user scrolls down/up. Unfortunately this results in having to perform manual filtering through the issues after the user is done selecting them. This is where the multi-paradigm comes in:
 
 \bigbreak
 
@@ -368,7 +368,7 @@ let result2 = zip(self.issues, self.selectedIndicies)
 
 \bigbreak
 
-This feature of the language is great, because it keeps the code clear and structured. There is absolutely no need for long and verbose code structures, using for cycles and being afraid that it might exceed the maximum index of an array. Also, the global functions on collections are better optimized by the compiler, resulting in 100\% speed increase of collection operations.\footnote{\url{http://stackoverflow.com/questions/29301577/performance-issue-while-finding-min-and-max-with-functional-approach/29305300\#29305300}}
+This feature of the language is great, because it keeps the code clear and structured. There is absolutely no need for long and verbose code structures, using for-cycles and being afraid that it might exceed the maximum index of an array. Also, the global functions on collections are better optimized by the compiler, resulting in 100\% speed increase of collection operations.\footnote{\url{http://stackoverflow.com/questions/29301577/performance-issue-while-finding-min-and-max-with-functional-approach/29305300\#29305300}}
 
 \newpage
 
@@ -380,29 +380,29 @@ This feature of the language is great, because it keeps the code clear and struc
     \caption{Tracking Engine Diagram}
 \end{figure}
 
-Tracking Engine is also deployed in AWS EB but it its workflow is a bit more complex. The whole system is designed to be horizontally scalable on every component:
+Tracking Engine is also deployed in AWS EB but its workflow is a bit more complex. The whole system is designed to be horizontally scalable on every component:
 
 \begin{enumerate}
 	\item {\bf Gateway} is scaled automatically by the Elastic Beanstalk environment.
 	\item {\bf S3 and SQS} are scaled automatically by AWS.
 	\item {\bf Aurora DB} is scaled automatically by AWS, along with replication and availability.
-	\item {\bf Workers} are scaled automatically instance to instance (vertical scaling), or can be deployed multiple times as is necessary (horizontal scaling - in the console, simply choose "Clone Environment"). Sometimes it is cheaper to deploy more workers on less powerful instances instead of letting it scale automatically with just few.
+	\item {\bf Workers} are scaled automatically instance to instance (vertical scaling), or can be deployed multiple times as necessary (horizontal scaling - in the console, simply choose "Clone Environment"). Sometimes it is cheaper to deploy more workers on less powerful instances instead of letting it scale automatically with just a few.
 \end{enumerate}
 
 \subsection{Workflow}
 
-The gateway is written in Java, also using the Spring-Boot framework. It's the main intersection for all the requests coming in an out. The workers are also another Spring-Boot application (deployed multiple times). Both of the applications use AWS SDK for connecting to S3 and the Aurora Database. The queue is implemented automatically in Amazon's environment and the only thing that a developer has to define is the method called on the worker (using HTTP POST). If the worker returns "200 OK", the message is considered as processed, so it is crucial to really throw an exception if one occurs, otherwise the message is lost.
+The gateway is written in Java, also using the Spring-Boot framework. It's the main intersection for all the requests coming in and out. The workers are also another Spring-Boot application (deployed multiple times). Both of the applications use AWS SDK for connecting to S3 and the Aurora Database. The queue is implemented automatically in Amazon's environment and the only thing that a developer has to define is the method called on the worker (using HTTP POST). If the worker returns "200 OK", the message is considered to have been processed, so it is crucial to really throw an exception if one occurs, otherwise the message is lost.
 
 \newpage
 
-The general workflow is:
+The general workflow is as follows:
 
 \begin{enumerate}
-	\item When a client application sends in the stats of usage, it is designed to save as much data as possible - it is sent archived using GZIP\footnote{\url{http://www.gzip.org/}}. Because the data is serialized into a JSON file, GZIP performs really well and saves up to 70\% of data otherwise spent on sending the giant list of events.
+	\item When a client application sends in the stats of usage, the procedure is designed to save as much data as possible - data is sent archived using GZIP\footnote{\url{http://www.gzip.org/}}. Because the data is serialized into a JSON file, GZIP performs really well and saves over 90\% of data otherwise spent on sending the giant list of events.
 	\item The gateway server takes the archive as it is and saves it to S3 object storage.
-	\item After uploading the archive, the gateway server sends a message into the task queue SQS. The message is absolutely straight-forward containing only the name of the file. The name of the file is generated by the gateway server using the UUID library. If that's not enough, S3 makes sure there is never a collision in the names - if there is, it proposes a different name and returns it after the upload, so it's always unique.
-	\item SQS then tries to deliver the message to an available worker. If it cannot be delivered it ends up "in flight", which is Amazon's implementation of dead letter queue. From there the Task queue system tries to deliver with a lowering frequency.
-	\item When the message is delivered to the worker, it obtains the archive from S3, unzips it, parses and saves to the database. When done, it also removes the archive from S3. Then it confirms with "200 OK" marking that the message has been successfully processed.
+	\item After uploading the archive, the gateway server sends a message into the task queue SQS. The message is absolutely straight-forward, containing only the name of the file. The name of the file is generated by the gateway server using the UUID library. If that's not enough, S3 makes sure there is never a collision in the names - if there is, it proposes a different name and returns it after the upload, so it's always unique.
+	\item SQS then tries to deliver the message to an available worker. If it cannot be delivered it ends up "in flight", which is Amazon's implementation of a dead letter queue. From there the task queue system tries to deliver with a lowering frequency.
+	\item When the message is delivered to the worker, it obtains the archive from S3, unzips it, parses and saves to the database. When done, it also removes the archive from S3. Then it confirms with "200 OK", marking that the message has been successfully processed.
 \end{enumerate}
 
 \subsection{Aurora Database}
@@ -417,9 +417,9 @@ Amazon Aurora is a fully managed, MySQL-compatible, relational database engine t
 
 \newpage
 
-Every application operating with large volumes of data eventually one day runs into the wall having a bottleneck in the database. I decided not to compromise when I was choosing between the database engines. There was also a simple RDS instance available, just like the one I am using in the Semantic Data Manager, but this one will have exponentially more entries in the database then the Semantic Data Manager ever will.
+Every application operating with large volumes of data eventually comes up against a bottleneck in the database. I decided not to compromise when I was choosing between database engines. There was also a simple RDS instance available, just like the one I am using in the Semantic Data Manager, but this one will have exponentially more entries in the database then the Semantic Data Manager ever will.
 
-Interestingly enough, Aurora DB wasn't officially supported by in the jdbc library enabling applications to connect to it. I managed to find it was in the Release Candidate 2 of the version 1.1.0 of the library. 
+Interestingly enough, Aurora DB wasn't officially supported by the jdbc library enabling applications to connect to it. I managed to find it was in the Release Candidate 2 of version 1.1.0 of the library. 
 
 \bigbreak
 
@@ -433,19 +433,19 @@ Interestingly enough, Aurora DB wasn't officially supported by in the jdbc libra
 
 \bigbreak
 
-The release of the official update is scheduled to June 2016.
+The release of the official update is scheduled for June 2016.
 
 \subsection{Deployment}
 
-The networking capabilities of AWS are very broad and because the architecture of the Tracking Engine is quite complex, it is important to first introduce couple entities in the AWS cloud environment.
+The networking capabilities of AWS are very broad and because the architecture of the Tracking Engine is quite complex, it is important to first introduce a couple entities in the AWS cloud environment.
 
 \subsubsection*{Identity and Access Management}
 
-Identity and Access Management (= IAM) is a web service that allows the management of access to compute, storage, database and application services in the AWS cloud. It uses concepts known in other similar services in different environments - Users, Groups and Permissions. It is very detailed and allows specifications of which users have access to certain services, the kinds of actions they can perform and which resources are available (ranging from virtual machines, database instances and even the ability to filter database query results). Good thing is, that it works seamlessly with already existing identity management solutions, such as Active Directory\footnote{\url{https://technet.microsoft.com/en-us/library/dd448614.aspx}}
+Identity and Access Management (= IAM) is a web service that allows the management of access to compute, storage, database and application services in the AWS cloud. It uses concepts known in other similar services in different environments - Users, Groups and Permissions. It is very detailed and allows specification of which users have access to certain services, the kinds of actions they can perform and which resources are available (ranging from virtual machines, database instances and even the ability to filter database query results). The good thing is that it works seamlessly with existing identity management solutions, such as Active Directory\footnote{\url{https://technet.microsoft.com/en-us/library/dd448614.aspx}}
 
 \subsubsection*{Permissions}
 
-Permissions allow specifications of who has access to AWS resources, and what actions can be performed on those resources. Every IAM user starts with no permissions at all. In other words, by default, users can do nothing, not even view their own access keys. Permissions can be added to the user (attach a policy to the user) or the user can be assigned to a group that has the desired permissions.
+Permissions allow specification of who has access to AWS resources and what actions can be performed on those resources. Every IAM user starts with no permissions at all. In other words, by default, users can do nothing, not even view their own access keys. Permissions can be added to the user (attach a policy to the user) or the user can be assigned to a group that has the desired permissions.
 
 \newpage
 
@@ -458,17 +458,17 @@ Permissions can be assigned either as identity-based or as resource-based:
 
 \subsubsection*{Policies}
 
-To assign permissions to a user, group, role, or resource, a policy has to be created. Policy is a document that explicitly lists permissions.
+To assign permissions to a user, group, role or resource, a policy has to be created. A policy is a document that explicitly lists permissions.
 
-Policy allows specification of the following:
+A policy allows specification of the following:
 
 \begin{itemize}
 	\item Actions: which actions should be allowed. Every service has its own set of actions.
-	\item Resources: which resources should be allowed to perform actions on.
-	\item Effect: which effect will a request to access by a user - deny or allow.
+	\item Resources: which resources it should be allowed to perform actions on.
+	\item Effect: which effect will a request to access by a user generate - deny or allow.
 \end{itemize}
 
-All policies are defined by a JSON file and can be assigned in totally granular fashion to every service and user.
+All policies are defined by a JSON file and can be assigned in a totally granular fashion to every service and user.
 
 
 \subsubsection*{Security Group}
@@ -477,11 +477,11 @@ A security group acts as a virtual firewall that controls the traffic for one or
 
 \bigbreak
 
-The whole AWS cloud environment is very complex and has way more to offer than just the couple points I listed above. For the sake of deploying my architecture it is sufficient. For anything else, AWS documentation\footnote{\url{http://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html}} is of very high quality and virtually any question can be answered there.
+The whole AWS cloud environment is very complex and has much more to offer than just the couple points I listed above. For the sake of deploying my architecture it is sufficient. For anything else, AWS documentation\footnote{\url{http://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html}} is of very high quality and virtually any question can be found there.
 
 \newpage
 
-Having the knowledge of all necessary foundations of the inner workflow in AWS, all of these prerequisites have to be met in order to deploy the Tracking Engine:
+Now that I have established all the necessary foundations of the inner workflow in AWS, all of these prerequisites have to be met in order to deploy the Tracking Engine:
 
 \begin{enumerate}
 	\item AWS EB application with IAM role with permissions to access SQS and S3.
@@ -506,15 +506,15 @@ Having the knowledge of all necessary foundations of the inner workflow in AWS, 
 	\item Open 3306 port in the Security Group between the AWS EB application and the Aurora Database.
 \end{enumerate}
 
-Everything else is automatic when the AWS EB application is set up as described with the Semantic Data Manager. Database URL is for security reasons injected through environment variables (it should never be hard-coded!).
+Everything else is automatic when the AWS EB application is set up as described with the Semantic Data Manager. The database URL is for security reasons injected through environment variables (it should never be hard-coded!).
 
 \subsection{Timeseries Application}
 
-The administration application for the Semantic Data Manager does provide a quick overview, but that is not meant to serve as a dashboard or any decision-making helper tool. It's merely just a peak on whether or not the desired application version is being tracked. Clearly that is not optimal for deriving any conclusions.
+The administration application for the Semantic Data Manager does provide a quick overview, but that is not meant to serve as a dashboard or any decision-making helper tool. It's merely indicates whether or not the desired application version is being tracked. Clearly that is not optimal for deriving any conclusions.
 
-In order to show the power of the gathered data I developed another mobile application meant just for displaying the flow of the data in time. It is inspired by the popular application Numerous\footnote{\url{http://numerousapp.com/}}, available on the Apple App Store.
+In order to show the power of the data gathered, I developed another mobile application meant just for displaying the flow of the data in time. It is inspired by the popular application Numerous\footnote{\url{http://numerousapp.com/}}, available on the Apple App Store.
 
-The requirements for such an applications could be endless - graph mash-ups, benchmarking and so much more. In order to simply demonstrate the movement in the KPIs and the potential in the data, I chose to display the total increase/decrease of entries during the last 5 days.
+The requirements for such an application could be endless - graph mash-ups, benchmarking and so much more. In order to simply demonstrate the movement in the KPIs and the potential in the data, I chose to display the total increase/decrease of entries during the last five days.
 
 \newpage
 
@@ -525,17 +525,17 @@ The requirements for such an applications could be endless - graph mash-ups, ben
 \end{figure}
 
 \begin{enumerate}
-	\item After choosing an application through the "Add" button (the list looks identical to any previous lists), the application automatically loads all KPIs available on the server. The number marks the total number of entries in the last 5 days.
-	\item By tapping on a number in the grid, a detailed graph is displayed having total number of entries per day - summing up to the same number as is displayed on the dashboard. The KPI can be deleted from the application so it's not displayed anymore (it remains on the server), because the application persists what was selected in the choice of applications and refreshes it on the next start of the application.
+	\item Once an application has been chosen using the "Add" button (the list looks identical to any previous lists), the application automatically loads all KPIs available on the server. The number marks the total number of entries in the last five days.
+	\item Tapping on a number in the grid displays a detailed graph showing the total number of entries per day - adding up to the same number as is displayed on the dashboard. The KPI can be deleted from the application so it's not displayed anymore (it remains on the server), because the application persists what was selected in the choice of applications and refreshes it on the next start of the application.
 \end{enumerate}
 
 \subsubsection{Technologies Used}
 
-Aside from the technologies already listed in the administration application (which I have used again) - Moya and MBProgressHUD, I also used:
+Aside from the technologies already listed in the administration application (which I have used again), namely Moya and MBProgressHUD, I also used:
 
 \paragraph{ios-charts}\mbox{}\\
 
-ios-charts is a charting library based on MPAndroidChart\footnote{\url{https://github.com/danielgindi/Charts}}. It is written in Swift and supports plethora of chart types - line charts, bar charts, pie charts, scatter plots, box plots, bubble charts and radar charts.
+ios-charts is a charting library based on MPAndroidChart\footnote{\url{https://github.com/danielgindi/Charts}}. It is written in Swift and supports a plethora of chart types - line charts, bar charts, pie charts, scatter plots, box plots, bubble charts and radar charts.
 
 The setup is quite "procedural" and requires a lot of boilerplate code, but when it's well set up, the result is very satisfying.
 
@@ -543,21 +543,21 @@ The setup is quite "procedural" and requires a lot of boilerplate code, but when
 
 \paragraph{Realm.io Database}\mbox{}\\
 
-Realm is a mobile database made by a start-up of the same name. Developed by two engineers from Nokia - Alexander Stigsen and Bjarne Christiansen, it is currently one of the most used frameworks used for iOS development. 
+Realm is a mobile database made by a start-up of the same name. Developed by two engineers from Nokia - Alexander Stigsen and Bjarne Christiansen, it is currently one of the most widely used frameworks for iOS development. 
 
 The main advantages are:
 
 \begin{itemize}
 	\item Mobile-first: built from the ground up to run directly inside phones, tablets and wearables.
-	\item Simple: Data is directly exposed as objects and queryable by code.
-	\item Fast: Realm is faster than SQLite on common operations.
+	\item Simple: data is directly exposed as objects and queryable by code.
+	\item Fast: Realm is faster than SQLite for common operations.
 \end{itemize}
 
-The great thing in comparison to CoreData, a native Apple framework on top of SQLite, is not having to keep the context object everywhere, where a anything can be written in the database. Another great tool shipped with the framework is a migration tool, that has a similar philosophy to Flyway described before.
+The great thing in comparison to CoreData, a native Apple framework on top of SQLite, is not having to keep the context object everywhere, where something should be written in the database. Another great tool shipped with the framework is a migration tool that has a similar philosophy to Flyway, which I described above.
 
-\subsubsection{API used}
+\subsubsection{API Used}
 
-Obviously, the goal is to send the data in as condensed format as possible. For those reasons, the automatically exposed API by Spring-Boot was too verbose. In order to load the data, I created another Controller endpoint in the Tracking Engine application that those handles special requests from the Timeseries application:
+Obviously, the goal is to send the data in as condensed a format as possible. For those reasons, the automatically exposed API by Spring-Boot was too verbose. In order to load the data, I created another Controller endpoint in the Tracking Engine application that handles special requests from the Timeseries application:
 
 \begin{enumerate}
 	\item \emph{/mobile/applicationEntryTypes} - returns a list of all KPIs in an application.
@@ -569,7 +569,7 @@ Obviously, the goal is to send the data in as condensed format as possible. For 
 }	
 \end{lstlisting}	
 	
-	\item \emph{/mobile/applicationEntrySummary} - returns 5 day entry count for a given KPI.
+	\item \emph{/mobile/applicationEntrySummary} - returns five-day entry count for a given KPI.
 	
 \begin{lstlisting}
 { "entries":[ ... ],
@@ -600,22 +600,22 @@ Methods exposed:
 	\item \emph{getAllActions} - returns all actions available in the dictionary
 \end{itemize}
 
-\subsection{Interface for storing}
+\subsection{Interface for Storing}
 
-The interface for storing provides couple functions:
+The interface for storing provides a couple functions:
 
 \begin{enumerate}
-	\item \emph{startEvent(itemIndex: Int)} - logs beginning of an event on the given index in the configuration.
+	\item \emph{startEvent(itemIndex: Int)} - logs the beginning of an event on the given index in the configuration.
 	\item \emph{finishEvent(itemIndex: Int)} - logs the end of an event on the given index in the configuration.
 	\item \emph{watchValue(itemIndex: Int, valueIndex: Int)} - logs an action of watched value on the given index assigned to an event on the given index in the configuration.
-	\item \emph{reportData(compressed: Bool, success: (() -> Void)?)} - reports data to the server, either in compressed format or not and after finishing it calls the optional (not mandatory to use) completion closure.
+	\item \emph{reportData(compressed: Bool, success: (() -> Void)?)} - reports data to the server, either in compressed format or not and after finishing, it calls the optional (not mandatory to use) completion closure.
 \end{enumerate}
 
 If an event is to be logged and the interpreter doesn't find it, fatalError is called again.
 
 \newpage
 
-To ensure clean code and the level of "security"\footnote{Security here refers to the Defensive Programming coding style leading to reduced number of bugs and problems.} of the code Swift's if-let and guard statements came in very handy:
+To ensure clean code and the level of "security"\footnote{Security here refers to the Defensive Programming coding style leading to a reduced number of bugs and problems.} of the code, Swift's if-let and guard statements came in very handy:
 
 \bigbreak
 
@@ -636,9 +636,9 @@ func startEvent(itemIndex: Int) {
 
 \bigbreak
 
-The guard statement and the if-let statement are somewhat similar - they make sure that an object the developer is trying to access is not null and will not cause any problems. The main difference is that if-let goes inside curly brackets and creates more complexity by indented code. Guard statement allows in-line handling, however it does not allow chaining of the statements, like the if-let statement does.
+The guard statement and the if-let statement are somewhat similar - they make sure that an object the developer is trying to access is not null and will not cause any problems. The main difference is that if-let goes inside curly brackets and creates more complexity by indented code. Guard statement allows in-line handling; however, it does not allow chaining of the statements like the if-let statement does.
 
-In fact, even more interesting feature is used in the code snippet above - Swift extension. The safe look-up of an action in the array of all actions is a separate function written as an extension to the standard collection functions in Swift. The extension is written this way:
+In fact, an even more interesting feature is used in the code snippet above - Swift extension. The safe look-up of an action in the array of all actions is a separate function written as an extension to the standard collection functions in Swift. The extension is written this way:
 
 \bigbreak
 
@@ -658,20 +658,20 @@ There is no need to override the whole Array object and implement a new method. 
 
 \subsection{Distribution}
 
-When a developer wants to use an external library, there are two standard ways how to get it to the project:
+When a developer wants to use an external library, there are two standard ways how to incorporate it into the project:
 
 \begin{enumerate}
 	\item Cocoapods
 	\item Carthage
 \end{enumerate}
 
-Cocoapods is more invasive - it links the source code into the project as another sub-targets and creates a new workspace for Xcode. Sometimes it can be frustrating, especially during clean builds when having more than 5 dependencies can take 5 minutes or more to fully compile.
+Cocoapods is more invasive - it links the source code into the project as another sub-target and creates a new workspace for Xcode. Sometimes it can be frustrating, especially during clean builds when having more than five dependencies can take five minutes or more to fully compile.
 
-Carthage is a non-invasive way of importing dependencies, however it is not standardized by Apple - it requires initial setup in Xcode and is subject to break during Xcode updates.
+Carthage is a non-invasive way of importing dependencies; however, it is not standardized by Apple - it requires initial setup in Xcode and is liable to break during Xcode updates.
 
 \bigbreak
 
-Requirements were to create both, which is creating a Podspec file for Cocoapods and a Cart file for Carthage:
+The company standards required me to create both, that is, a Podspec file for Cocoapods and a Cart file for Carthage:
 
 \begin{lstlisting}
 // Cartfile
@@ -707,15 +707,15 @@ end
 
 \subsection{Workflow}
 
-The usage of the framework after linking is very straight forward. The main object to use is called \emph{Reporter} - it is singleton and accessible via it's proeprty \emph{sharedInstance}. The Reporter class is the interface for storing and offers all methods listed in previous section.
+The usage of the framework after linking is very straight forward. The main object to use is called \emph{Reporter} - it is singleton and accessible via it's property \emph{sharedInstance}. The Reporter class is the interface for storing and offers all methods listed in the previous section.
 
-It can be initially set up whether the reporting to the server will be handled automatically or not. If not, the developer has to handle the upload scheduling himself and call the function \emph{reportData} whenever needed. If the automatic reporting is set up, an NSTimer thread object runs in the background, firing every 120 seconds to check if there is anything in the database to be reported. If yes, it gets uploaded to the server.
+It can be initially set up whether the reporting to the server will be handled automatically or not. If not, the developer has to handle the upload scheduling himself and call the function \emph{reportData} whenever needed. If automatic reporting is set up, an NSTimer thread object runs in the background, firing every 120 seconds to check if there is anything in the database to be reported. If yes, it gets uploaded to the server.
 
 \subsection{Technologies Used}
 
-Aside from all the technologies previously listed - Moya and Realm, in this component I had to also use Alamofire from which I tried to abstract myself away with Moya. Unfortunately Moya does not support uploading binary data via POST, so I had to use a lower-level tool to get the archived data to the server.
+Aside from all the technologies previously listed (Moya and Realm), in this component I also had to use Alamofire (from which I tried to abstract myself away with Moya). Unfortunately Moya does not support uploading binary data via POST, so I had to use a lower-level tool to get the archived data to the server.
 
-Another technology I used here is a GZIP library handling the archiving of data. The library comes with a choice of level of encryption, which for a text can be naturally selected to the highest number. The object that is archived can only be an NSData object, so I serialized the JSON that is supposed to be archived into UTF8-encoded data:
+Another technology I used here is a GZIP \cite{deutsch1996gzip} library handling the archiving of data. The library comes with a choice of level of encryption, which for a text can be naturally selected to the highest number. The object that is archived can only be an NSData object, so I serialized the JSON that is supposed to be archived into UTF8-encoded data:
 
 \bigbreak
 
