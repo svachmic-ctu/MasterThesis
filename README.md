@@ -22,7 +22,3 @@ In order to compile all cross-references and bibliography, follow these steps:
 ## Contact
 
 - [Michal Švácha](http://github.com/svachmic) ([@miguelitinho](https://twitter.com/miguelitinho))
-
-## License
-
-Pending
