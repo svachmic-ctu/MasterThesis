@@ -3,6 +3,8 @@
 Master's Thesis at Czech Technical University in Prague (Summer 2016)
 
 [![Twitter](https://img.shields.io/badge/twitter-@miguelitinho-blue.svg?style=flat)](http://twitter.com/miguelitinho)
+[![Institution](https://img.shields.io/badge/institution-ctu-yellow.svg?style=flat)](https://www.fel.cvut.cz/en/)
+[![Language](https://img.shields.io/badge/language-english-green.svg?style=flat)](https://en.wikipedia.org/wiki/English_language)
 
 ## Abstract
 
